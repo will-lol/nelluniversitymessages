@@ -11,6 +11,11 @@ export interface Message {
   uuid: string
 }
 
+const configData = await config({
+  export: true,
+  allowEmptyValues: true,
+});
+
 const serviceAccountPrivateKey = await importPKCS8(
   Deno.env.get("SERVICE_ACCOUNT_PRIVATE_KEY")!,
   "RS256",
