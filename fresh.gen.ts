@@ -8,8 +8,7 @@ import * as $1 from "./routes/_404.tsx";
 import * as $2 from "./routes/_app.tsx";
 import * as $3 from "./routes/api/sendMessage.ts";
 import * as $4 from "./routes/index.tsx";
-import * as $5 from "./routes/message.tsx";
-import * as $6 from "./routes/send.tsx";
+import * as $5 from "./routes/send.tsx";
 import * as $$0 from "./islands/form.tsx";
 
 const manifest = {
@@ -19,8 +18,7 @@ const manifest = {
     "./routes/_app.tsx": $2,
     "./routes/api/sendMessage.ts": $3,
     "./routes/index.tsx": $4,
-    "./routes/message.tsx": $5,
-    "./routes/send.tsx": $6,
+    "./routes/send.tsx": $5,
   },
   islands: {
     "./islands/form.tsx": $$0,

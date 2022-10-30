@@ -69,12 +69,8 @@ export const handler: Handlers = {
         firebaseOauth = await fetchOauth(JWT);
         persistantJWT = JWT;
         persistantOauthToken = firebaseOauth;
-
-        console.log("generated new TOKEN: " + firebaseOauth);
       } else {
         firebaseOauth = persistantOauthToken;
-
-        console.log("retrieved old TOKEN: " + firebaseOauth);
       }
 
       return firebaseOauth!;
