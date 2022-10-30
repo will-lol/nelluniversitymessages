@@ -62,8 +62,8 @@ export const handler: Handlers = {
 
       if (Deno.env.get("JWT") == undefined || dateInPast(new Date(Deno.env.get("JWT_EXPIRE_TIME")!))) {
         JWT = await generateJWT();
-        Deno.env.set("JWT", JWT);
         firebaseOauth = await fetchOauth(JWT);
+        Deno.env.set("JWT", JWT);
         Deno.env.set("OAUTH_ACCESS_TOKEN", firebaseOauth);
 
         console.log("generated new TOKEN: " + firebaseOauth);
