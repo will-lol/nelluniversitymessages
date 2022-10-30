@@ -6,8 +6,27 @@ interface FormProps {
   universities: UniversityClass[];
 }
 
-interface UUID {
-  UUID: string;
+function getUUIDCookie(): string {
+  console.log("getting");
+  const cookies = document.cookie.split(";");
+  for(let i = 0; i <cookies.length; i++) {
+    let c = cookies[i];
+    console.log(c);
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+      console.log(c);
+    }
+    if (c.indexOf("UUID" + "=") == 0) {
+      return c.substring(("UUID" + "=").length, c.length);
+    }
+  }
+  throw "cookie does not exist"
+}
+
+function setUUIDCookie() {
+  const UUID = crypto.randomUUID() ;
+  document.cookie = "UUID=" + UUID + ";" + " expires=Fri, 01 Jan 9999 00:00:00 GMT";
+  return UUID;
 }
 
 export default function Form(props: FormProps) {
@@ -19,22 +38,22 @@ export default function Form(props: FormProps) {
   async function handleSubmit(e: Event) {
     e.preventDefault();
     setSubmitting(true);
-    let UUID: UUID;
+
+    let UUID: string;
     try {
-      UUID = JSON.parse(document.cookie) as UUID;
+      UUID = getUUIDCookie();
     } catch {
-      UUID = { UUID: crypto.randomUUID() };
-      document.cookie = JSON.stringify(UUID);
+      UUID = setUUIDCookie();
     }
     const body: Message = {
       messageContent: message,
       university: university,
-      uuid: UUID.UUID,
+      uuid: UUID,
     };
     console.log(body);
     const sendMessage = await fetch("/api/sendMessage", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
 
