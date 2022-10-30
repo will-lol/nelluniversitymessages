@@ -5,6 +5,12 @@ import {
   SignJWT,
 } from "https://deno.land/x/jose@v4.10.0/index.ts";
 
+export interface Message {
+  messageContent: string,
+  university: string,
+  uuid: string
+}
+
 const configData = await config({
   export: true,
   allowEmptyValues: true,
@@ -68,12 +74,6 @@ export const handler: Handlers = {
       }
 
       return firebaseOauth!;
-    }
-
-    interface Message {
-      messageContent: string,
-      university: string,
-      uuid: string
     }
 
     //TODO: Check UUID is a suitable length. Check messageContent for spam or profranity. Check university exists.
