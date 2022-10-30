@@ -1,5 +1,5 @@
 import { Handlers } from "$fresh/server.ts";
-import { config } from "$deno-std/dotenv/mod.ts";
+import { config as envConfig } from "$deno-std/dotenv/mod.ts";
 import {
   importPKCS8,
   SignJWT,
@@ -11,7 +11,7 @@ export interface Message {
   uuid: string
 }
 
-const configData = await config({
+const configData = await envConfig({
   export: true,
   allowEmptyValues: true,
 });
