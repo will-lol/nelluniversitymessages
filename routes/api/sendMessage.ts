@@ -21,6 +21,10 @@ const serviceAccountPrivateKey = await importPKCS8(
   "RS256",
 );
 
+let persistantJWT: string | undefined;
+let persistantJWTExpireTime: Date | undefined;
+let persistantOauthToken: string | undefined;
+
 export const handler: Handlers = {
   async POST(req) {
     async function generateJWT(): Promise<string> {
@@ -34,7 +38,7 @@ export const handler: Handlers = {
         .setAudience("https://oauth2.googleapis.com/token")
         .setProtectedHeader({ alg: "RS256", typ: "JWT" });
 
-      Deno.env.set("JWT_EXPIRE_TIME", expDate.toISOString());
+      persistantJWTExpireTime = expDate;
       return JWT.sign(serviceAccountPrivateKey);
     }
 
@@ -60,15 +64,15 @@ export const handler: Handlers = {
       let JWT;
       let firebaseOauth: string | undefined = undefined;
 
-      if (Deno.env.get("JWT") == undefined || dateInPast(new Date(Deno.env.get("JWT_EXPIRE_TIME")!))) {
+      if (persistantJWT == undefined || dateInPast(persistantJWTExpireTime!)) {
         JWT = await generateJWT();
         firebaseOauth = await fetchOauth(JWT);
-        Deno.env.set("JWT", JWT);
-        Deno.env.set("OAUTH_ACCESS_TOKEN", firebaseOauth);
+        persistantJWT = JWT;
+        persistantOauthToken = firebaseOauth;
 
         console.log("generated new TOKEN: " + firebaseOauth);
       } else {
-        firebaseOauth = Deno.env.get("OAUTH_ACCESS_TOKEN");
+        firebaseOauth = persistantOauthToken;
 
         console.log("retrieved old TOKEN: " + firebaseOauth);
       }
