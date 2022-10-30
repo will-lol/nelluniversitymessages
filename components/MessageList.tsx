@@ -2,7 +2,7 @@ import { MessageClass } from "../routes/[university].tsx";
 import Message from "./Message.tsx"
 
 interface MessageListProps {
-  messages?: MessageClass[];
+  messages?: MessageClass[] | null;
 }
 
 export default function MessageList(props: MessageListProps) {

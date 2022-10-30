@@ -34,7 +34,7 @@ export class UniversityClass {
 } 
 
 interface UniversityProps {
-  messages: MessageClass[];
+  messages: MessageClass[] | null;
   university: UniversityClass;
 }
 
@@ -79,7 +79,7 @@ export async function fetchUniversities(): Promise<UniversityClass[]> {
   return universities
 }
 
-async function fetchMessages(university: UniversityClass): Promise<MessageClass[]> {
+async function fetchMessages(university: UniversityClass): Promise<MessageClass[] | null> {
   const requestBody = {
     "structuredQuery": {
       "where": {
@@ -108,14 +108,20 @@ async function fetchMessages(university: UniversityClass): Promise<MessageClass[
       body: JSON.stringify(requestBody),
     },
   ).then((res) => res.json());
-  const messages: MessageClass[] = messagesFirestore.map((elem) => {
-    return {
-      messageContent: elem.document.fields.messageContent.stringValue,
-      timeCreated: new Date(elem.document.fields.timeCreated.timestampValue),
-      university: new UniversityClass(referenceToShortName(elem.document.fields.university.referenceValue), universities),
-      uuid: elem.document.fields.uuid.stringValue,
-    };
-  });
+
+  let messages: MessageClass[] | null;
+  try {
+    messages = messagesFirestore.map((elem) => {
+      return {
+        messageContent: elem.document.fields.messageContent.stringValue,
+        timeCreated: new Date(elem.document.fields.timeCreated.timestampValue),
+        university: new UniversityClass(referenceToShortName(elem.document.fields.university.referenceValue), universities),
+        uuid: elem.document.fields.uuid.stringValue,
+      };
+    });
+  } catch {
+    messages = null;
+  }
 
   return messages;
 }
@@ -132,8 +138,8 @@ export const handler: Handlers<UniversityProps> = {
     } catch {
       return ctx.renderNotFound();
     }
-    
-    const messages: MessageClass[] = await fetchMessages(universityObj);
+
+    const messages: MessageClass[] | null= await fetchMessages(universityObj);
 
     return ctx.render({
       messages: messages,
