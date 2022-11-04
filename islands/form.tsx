@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useEffect, useId, useState } from "preact/hooks";
 import { UniversityClass } from "../routes/[university].tsx";
 import { Message } from "../routes/api/sendMessage.ts";
 
@@ -33,7 +33,21 @@ export default function Form(props: FormProps) {
   const [message, setMessage] = useState("");
   const [university, setUniversity] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
+
+  const inputId = useId();
+  const selectId = useId();
+
+  function onLoad() {
+    console.log("hi");
+    setMessage((document.getElementById(inputId) as HTMLInputElement).value);
+    setUniversity((document.getElementById(selectId) as HTMLSelectElement).value);
+  }
+
+  useEffect(() => {
+    console.log("hi");
+    onLoad();
+  }, [])
 
   async function handleSubmit(e: Event) {
     e.preventDefault();
@@ -58,7 +72,7 @@ export default function Form(props: FormProps) {
     });
 
     if (sendMessage.status != 200) {
-      setError(true);
+      setError(sendMessage.statusText);
     } else {
       window.location.href = "/" + university;
     }
@@ -69,7 +83,7 @@ export default function Form(props: FormProps) {
       <label htmlFor="message">* Message</label>
       <input
         autocomplete="off"
-        id="message"
+        id={inputId}
         name="message"
         type="text"
         onInput={(e) => setMessage((e.target as HTMLSelectElement).value)}
@@ -78,7 +92,7 @@ export default function Form(props: FormProps) {
       <label htmlFor="university">* University</label>
       <select
         name="university"
-        id="university"
+        id={selectId}
         onChange={(e) => setUniversity((e.target as HTMLSelectElement).value)}
         default={undefined}
         autocomplete="off"

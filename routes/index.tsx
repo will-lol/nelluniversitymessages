@@ -6,8 +6,8 @@ export default function Home() {
       <Head>
         <title>Home</title>
       </Head>
-      <h1>Welcome to nellbradshawisawesome</h1>
-      <p>You have landed on a project in progress.</p>
+      <h1 class="text-4xl font-bold">Welcome to nellbradshawisawesome</h1>
+      <p class="my-6">You have landed on a project in progress.</p>
       <p>Coming soon.</p>
     </>
   );
