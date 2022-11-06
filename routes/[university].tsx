@@ -1,4 +1,5 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
+import Button from "../components/Button.tsx";
 import MessageList from "../components/MessageList.tsx";
 
 export class MessageClass {
@@ -162,7 +163,7 @@ export default function University(
         <MessageList messages={data?.messages} />
       </ul>
       <a href="/send">
-        <button>send a message</button>
+        <Button>send a message</Button>
       </a>
     </>
   );
