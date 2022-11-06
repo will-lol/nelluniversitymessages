@@ -1,6 +1,7 @@
 import { useEffect, useId, useState } from "preact/hooks";
 import { UniversityClass } from "../routes/[university].tsx";
 import { Message } from "../routes/api/sendMessage.ts";
+import Button from "../components/Button.tsx"
 
 interface FormProps {
   universities: UniversityClass[];
@@ -102,13 +103,13 @@ export default function Form(props: FormProps) {
           return <option value={elem.shortName}>{elem.name}</option>;
         })}
       </select>
-      <button
+      <Button
         type="submit"
         disabled={((message.length == 0) || (university.length == 0)) ||
           submitting}
       >
         Submit
-      </button>
+      </Button>
     </form>
   );
 }
