@@ -15,6 +15,10 @@ export class MessageClass {
   }
 }
 
+function capsInsensitiveStringMatch(str1: string, str2: string): boolean {
+  return (str1.toLowerCase == str2.toLowerCase);
+}
+
 export class UniversityClass {
   shortName: string;
   city: string;
@@ -22,7 +26,7 @@ export class UniversityClass {
 
   constructor(shortName: string, universities: UniversityClass[]) {
     for (let i=0;i<universities.length;i++) {
-      if (shortName == universities[i].shortName) {
+      if (capsInsensitiveStringMatch(shortName, universities[i].shortName)) {
         this.shortName = universities[i].shortName;
         this.city = universities[i].city;
         this.name = universities[i].name;
