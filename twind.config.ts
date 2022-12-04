@@ -35,7 +35,7 @@ export default {
   },
   theme: {
     fontFamily: {
-      sans: "Archivo Narrow, sans-serif",
+      sans: '"Archivo Narrow", Impact, "Haettenschweiler", "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans-serif',
     },
     colors: {
       gray: colors.trueGray,
