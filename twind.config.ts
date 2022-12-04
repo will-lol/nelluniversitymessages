@@ -12,29 +12,57 @@ export default {
   preflight: {
     "@font-face": [
       {
-        fontFamily: "Libre Franklin",
-        fontWeight: 400,
-        src:
-          'url(./static/fonts/libre-franklin-v13-latin-regular.woff) format("woff")',
+        fontFamily: "'Archivo Narrow'",
+        fontStyle: "normal",
+        fontWeight: "400 700",
+        src: [
+          'url("./fonts/ArchivoNarrow-Variable.woff2") format("woff2")',
+          'url("./fonts/ArchivoNarrow-Variable.woff") format("woff")'
+        ]
       },
       {
-        fontFamily: "Libre Franklin",
-        fontWeight: 500,
-        src:
-          'url(./static/fonts/libre-franklin-v13-latin-500.woff) format("woff")',
+        fontFamily: "'Archivo Narrow'",
+        fontStyle: "italic",
+        fontWeight: "400 700",
+        src: [
+          'url("./fonts/ArchivoNarrow-Italic-Variable.woff2") format("woff2")',
+          'url("./fonts/ArchivoNarrow-Italic-Variable.woff") format("woff")'
+        ]
       },
     ],
 
-    body: apply`font-sans bg-gray-200 dark:bg-gray-800 text-black dark:text-white`,
+    body: apply`font-sans dark:bg-black text-black font-normal dark:text-white`,
   },
   theme: {
     fontFamily: {
-      sans: "Libre Franklin, sans-serif",
+      sans: "Archivo Narrow, sans-serif",
     },
     colors: {
       gray: colors.trueGray,
       black: colors.black,
-      white: colors.white
+      white: colors.white,
+    },
+    extend: {
+      backgroundImage: {
+        "wall-texture": "url('./images/texture.jpg')",
+      },
+      backgroundSize: {
+        "small": "540px",
+      },
+      width: {
+        "screen-pad": "calc(100vw - 3rem)"
+      },
+      height: {
+        "screen-pad": "calc(100vh - 3rem)"
+      },
+      boxShadow: {
+        "message": "0px 50px 45px rgba(0, 0, 0, 0.12), 0px 8.9px 16.4px rgba(0, 0, 0, 0.083), 0px 3.7px 8px rgba(0, 0, 0, 0.067), 0px 1.8px 3.9px rgba(0, 0, 0, 0.053), 0px 0.8px 1.5px rgba(0, 0, 0, 0.012)"
+      },
+      //GRID
+        gridTemplateColumns: {
+
+        }
+      //END GRID
     },
   },
 } as Options;

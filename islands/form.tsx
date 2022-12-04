@@ -8,14 +8,11 @@ interface FormProps {
 }
 
 function getUUIDCookie(): string {
-  console.log("getting");
   const cookies = document.cookie.split(";");
   for(let i = 0; i <cookies.length; i++) {
     let c = cookies[i];
-    console.log(c);
     while (c.charAt(0) == ' ') {
       c = c.substring(1);
-      console.log(c);
     }
     if (c.indexOf("UUID" + "=") == 0) {
       return c.substring(("UUID" + "=").length, c.length);
@@ -31,22 +28,24 @@ function setUUIDCookie() {
 }
 
 export default function Form(props: FormProps) {
+  const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [university, setUniversity] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const inputId = useId();
-  const selectId = useId();
+  const messageElementId = useId();
+  const titleElementId = useId();
+  const selectElementId = useId();
 
   function onLoad() {
     console.log("hi");
-    setMessage((document.getElementById(inputId) as HTMLInputElement).value);
-    setUniversity((document.getElementById(selectId) as HTMLSelectElement).value);
+    setTitle((document.getElementById(titleElementId) as HTMLInputElement).value);
+    setMessage((document.getElementById(messageElementId) as HTMLInputElement).value);
+    setUniversity((document.getElementById(selectElementId) as HTMLSelectElement).value);
   }
 
   useEffect(() => {
-    console.log("hi");
     onLoad();
   }, [])
 
@@ -61,6 +60,7 @@ export default function Form(props: FormProps) {
       UUID = setUUIDCookie();
     }
     const body: Message = {
+      messageTitle: title,
       messageContent: message,
       university: university,
       uuid: UUID,
@@ -81,10 +81,19 @@ export default function Form(props: FormProps) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="message">* Message</label>
+      <label htmlFor="title">* Title</label>
       <input
         autocomplete="off"
-        id={inputId}
+        id={titleElementId}
+        name="title"
+        type="text"
+        onInput={(e) => setTitle((e.target as HTMLSelectElement).value)}
+        disabled={submitting}
+ />
+       <label htmlFor="message">* Message</label>
+      <input
+        autocomplete="off"
+        id={messageElementId}
         name="message"
         type="text"
         onInput={(e) => setMessage((e.target as HTMLSelectElement).value)}
@@ -93,7 +102,7 @@ export default function Form(props: FormProps) {
       <label htmlFor="university">* University</label>
       <select
         name="university"
-        id={selectId}
+        id={selectElementId}
         onChange={(e) => setUniversity((e.target as HTMLSelectElement).value)}
         default={undefined}
         autocomplete="off"

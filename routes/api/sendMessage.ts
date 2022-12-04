@@ -6,6 +6,7 @@ import {
 } from "https://deno.land/x/jose@v4.10.0/index.ts";
 
 export interface Message {
+  messageTitle: string,
   messageContent: string,
   university: string,
   uuid: string
@@ -82,6 +83,9 @@ export const handler: Handlers = {
 
     const data = {
       "fields": {
+        "messageTitle": {
+          "stringValue": messageData.messageTitle,
+        },
         "messageContent": {
           "stringValue": messageData.messageContent,
         },

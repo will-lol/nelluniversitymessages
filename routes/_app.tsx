@@ -8,7 +8,7 @@ export default function App(props: AppProps) {
         <meta name="description" content="Hello world!" />
         <link rel="shortcut icon" href="/logo.svg" type="image/svg" />
       </Head>
-      <props.Component />
+      <props.Component/>
     </>
   );
 }

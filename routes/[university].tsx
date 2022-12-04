@@ -1,14 +1,22 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import Button from "../components/Button.tsx";
-import MessageList from "../components/MessageList.tsx";
+import MessageGrid from "../components/MessageGrid.tsx";
 
 export class MessageClass {
+  messageTitle: string;
   messageContent: string;
   timeCreated: Date;
   university: UniversityClass;
   uuid: string;
 
-  constructor(messageContent: string, timeCreated: Date, university: UniversityClass, uuid: string) {
+  constructor(
+    messageTitle: string,
+    messageContent: string,
+    timeCreated: Date,
+    university: UniversityClass,
+    uuid: string,
+  ) {
+    this.messageTitle = messageTitle;
     this.messageContent = messageContent;
     this.timeCreated = timeCreated;
     this.university = university;
@@ -26,7 +34,7 @@ export class UniversityClass {
   name: string;
 
   constructor(shortName: string, universities: UniversityClass[]) {
-    for (let i=0;i<universities.length;i++) {
+    for (let i = 0; i < universities.length; i++) {
       if (capsInsensitiveStringMatch(shortName, universities[i].shortName)) {
         this.shortName = universities[i].shortName;
         this.city = universities[i].city;
@@ -34,9 +42,9 @@ export class UniversityClass {
         return;
       }
     }
-    throw("university shortName does not exist");
+    throw ("university shortName does not exist");
   }
-} 
+}
 
 interface UniversityProps {
   messages: MessageClass[] | null;
@@ -47,6 +55,7 @@ interface FirestoreMessageResponse {
   document: {
     name: string;
     fields: {
+      messageTitle: { stringValue: string };
       messageContent: { stringValue: string };
       timeCreated: { timestampValue: string };
       uuid: { stringValue: string };
@@ -60,11 +69,11 @@ interface FirestoreUniversityResponse {
   fields: {
     city: { stringValue: string };
     name: { stringValue: string };
-  }
+  };
 }
 
 interface FirestoreUniversitiesResponse {
-  documents: FirestoreUniversityResponse[]
+  documents: FirestoreUniversityResponse[];
 }
 
 function referenceToShortName(reference: string): string {
@@ -72,19 +81,25 @@ function referenceToShortName(reference: string): string {
 }
 
 export async function fetchUniversities(): Promise<UniversityClass[]> {
-  const universityFetch: FirestoreUniversitiesResponse = await fetch("https://firestore.googleapis.com/v1/projects/nellbradshawisawesome/databases/(default)/documents/universities").then((res) => res.json());
-  const universities: UniversityClass[] = universityFetch.documents.map((elem) => {
-    return {
-      shortName: referenceToShortName(elem.name),
-      city: elem.fields.city.stringValue,
-      name: elem.fields.name.stringValue
-    }
-  })
+  const universityFetch: FirestoreUniversitiesResponse = await fetch(
+    "https://firestore.googleapis.com/v1/projects/nellbradshawisawesome/databases/(default)/documents/universities",
+  ).then((res) => res.json());
+  const universities: UniversityClass[] = universityFetch.documents.map(
+    (data) => {
+      return {
+        shortName: referenceToShortName(data.name),
+        city: data.fields.city.stringValue,
+        name: data.fields.name.stringValue,
+      };
+    },
+  );
 
-  return universities
+  return universities;
 }
 
-async function fetchMessages(university: UniversityClass): Promise<MessageClass[] | null> {
+async function fetchMessages(
+  university: UniversityClass,
+): Promise<MessageClass[] | null> {
   const requestBody = {
     "structuredQuery": {
       "where": {
@@ -116,12 +131,16 @@ async function fetchMessages(university: UniversityClass): Promise<MessageClass[
 
   let messages: MessageClass[] | null;
   try {
-    messages = messagesFirestore.map((elem) => {
+    messages = messagesFirestore.map((data) => {
       return {
-        messageContent: elem.document.fields.messageContent.stringValue,
-        timeCreated: new Date(elem.document.fields.timeCreated.timestampValue),
-        university: new UniversityClass(referenceToShortName(elem.document.fields.university.referenceValue), universities),
-        uuid: elem.document.fields.uuid.stringValue,
+        messageTitle: data.document.fields.messageTitle.stringValue,
+        messageContent: data.document.fields.messageContent.stringValue,
+        timeCreated: new Date(data.document.fields.timeCreated.timestampValue),
+        university: new UniversityClass(
+          referenceToShortName(data.document.fields.university.referenceValue),
+          universities,
+        ),
+        uuid: data.document.fields.uuid.stringValue,
       };
     });
   } catch {
@@ -144,7 +163,7 @@ export const handler: Handlers<UniversityProps> = {
       return ctx.renderNotFound();
     }
 
-    const messages: MessageClass[] | null= await fetchMessages(universityObj);
+    const messages: MessageClass[] | null = await fetchMessages(universityObj);
 
     return ctx.render({
       messages: messages,
@@ -157,14 +176,8 @@ export default function University(
   { data }: PageProps<UniversityProps | null>,
 ) {
   return (
-    <>
-      <h1>Hello {data?.university.name}</h1>
-      <ul>
-        <MessageList messages={data?.messages} />
-      </ul>
-      <a href="/send">
-        <Button>send a message</Button>
-      </a>
-    </>
+    <body class="bg-[#E0E0E0] bg-repeat bg-small bg-wall-texture overflow-scroll">
+        <MessageGrid messages={data?.messages} university={data?.university} />
+    </body>
   );
 }
