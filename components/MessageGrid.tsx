@@ -17,13 +17,13 @@ export default function MessageGrid(props: MessageGridProps) {
 
   let messages = props.messages;
   messages = messages?.sort(compareMessageDate);
-  let messagesPlacement: number[][] = [];
+  const messagesPlacement: number[][] = [];
 
   const messagesLength = messages?.length ?? 0;
   const gridRows = Math.round(messagesLength / 2);
   const gridCols = messagesLength;
 
-  let divs: Array<preact.JSX.Element> = [];
+  const divs: Array<preact.JSX.Element> = [];
   for (
     let i = 0;
     i <= (((gridCols * gridRows) - messagesLength) - 1);
