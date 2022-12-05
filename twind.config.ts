@@ -41,6 +41,7 @@ export default {
       gray: colors.trueGray,
       black: colors.black,
       white: colors.white,
+      blue: colors.blue
     },
     extend: {
       backgroundImage: {
