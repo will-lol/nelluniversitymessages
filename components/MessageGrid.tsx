@@ -15,11 +15,20 @@ export default function MessageGrid(props: MessageGridProps) {
   }
 
   let messages = props.messages;
-  messages = messages?.sort(compareMessageDate) 
+  messages = messages?.sort(compareMessageDate);
 
-  const  gridRows = messages?.length ?? 0;
-  const gridCols = gridRows*3;
-  
+  const messagesLength = messages?.length ?? 0;
+  const gridRows = messagesLength / 2;
+  const gridCols = messagesLength;
+
+  let divs: Array<preact.JSX.Element> = [];
+  for (
+    let i = 0;
+    i <= (((gridCols * gridRows) - messagesLength) - 1);
+    i++
+  ) {
+    divs.push(<div />);
+  }
 
   if (messages == null) {
     return (
@@ -29,12 +38,34 @@ export default function MessageGrid(props: MessageGridProps) {
     );
   } else {
     return (
-        <div class={"grid grid-cols-[repeat(" + gridCols + ",100svw)] grid-rows-[repeat(" + gridRows + ",minmax(100svh,auto))] justify-items-center items-start"}>
-          <div class="p-7 text-center h-[100svh] flex justify-center items-center flex-col"><p>Welcome to the {props.university?.name} exhibition.</p> <p class="mb-4">Explore the exhibits by moving around the wall.</p> <Link href="send">Add an exhibit</Link></div>
-            {messages.map((message) => {
-                return <div class="w-[100svw] flex items-start justify-start"><Message title={message.messageTitle} date={message.timeCreated} uuid={message.uuid} university={message.university.name}>{message.messageContent}</Message></div>
-            })}
+      <div
+        class={"grid grid-cols-[repeat(" + gridCols +
+          ",100svw)] grid-rows-[repeat(" + gridRows +
+          ",minmax(100svh,auto))] justify-items-center items-start"}
+      >
+        <div class="p-7 text-center h-[100svh] flex justify-center items-center flex-col motion-safe:animate-wiggle-norm">
+          <p>Welcome to the {props.university?.name} exhibition.</p>{" "}
+          <p class="mb-4">
+            Explore the exhibits by moving around the wall.
+          </p>
+          <Link href="send">Add an exhibit</Link>
         </div>
-      );    
+        {divs}
+        {messages.map((message) => {
+          return (
+            <div class="w-[100svw] flex items-start justify-start">
+              <Message
+                title={message.messageTitle}
+                date={message.timeCreated}
+                uuid={message.uuid}
+                university={message.university.name}
+              >
+                {message.messageContent}
+              </Message>
+            </div>
+          );
+        })}
+      </div>
+    );
   }
 }
