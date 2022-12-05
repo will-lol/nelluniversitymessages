@@ -176,7 +176,7 @@ export default function University(
   { data }: PageProps<UniversityProps | null>,
 ) {
   return (
-    <body class="bg-[#E0E0E0] bg-repeat bg-small bg-wall-texture overflow-scroll">
+    <body class="bg-wallGray bg-repeat bg-small bg-wall-texture overflow-scroll">
         <MessageGrid messages={data?.messages} university={data?.university} />
     </body>
   );

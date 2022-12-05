@@ -41,7 +41,8 @@ export default {
       gray: colors.trueGray,
       black: colors.black,
       white: colors.white,
-      blue: colors.blue
+      blue: colors.blue,
+      wallGray: "#E0E0E0"
     },
     extend: {
       backgroundImage: {
@@ -49,12 +50,6 @@ export default {
       },
       backgroundSize: {
         "small": "540px",
-      },
-      width: {
-        "screen-pad": "calc(100vw - 3rem)"
-      },
-      height: {
-        "screen-pad": "calc(100vh - 3rem)"
       },
       boxShadow: {
         "message": "0px 50px 45px rgba(0, 0, 0, 0.12), 0px 8.9px 16.4px rgba(0, 0, 0, 0.083), 0px 3.7px 8px rgba(0, 0, 0, 0.067), 0px 1.8px 3.9px rgba(0, 0, 0, 0.053), 0px 0.8px 1.5px rgba(0, 0, 0, 0.012)"
