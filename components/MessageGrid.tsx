@@ -1,7 +1,6 @@
 import { MessageClass } from "../routes/[university].tsx";
 import Message from "./Message.tsx";
 import { UniversityClass } from "../routes/[university].tsx";
-import Button from "./Button.tsx";
 import Link from "./Link.tsx";
 
 interface MessageGridProps {
@@ -43,12 +42,14 @@ export default function MessageGrid(props: MessageGridProps) {
           ",100svw)] grid-rows-[repeat(" + gridRows +
           ",minmax(100svh,auto))] justify-items-center items-start"}
       >
-        <div class="p-7 text-center h-[100svh] flex justify-center items-center flex-col motion-safe:animate-wiggle-norm">
+        <div class="p-7 text-center h-[100svh] flex justify-center items-center flex-col">
           <p>Welcome to the {props.university?.name} exhibition.</p>{" "}
-          <p class="mb-4">
+          <p class="text-6xl  mb-4">
             Explore the exhibits by moving around the wall.
           </p>
-          <Link href="send">Add an exhibit</Link>
+          <div class="text-6xl">
+            <Link href="send">Add an exhibit</Link>
+          </div>
         </div>
         {divs}
         {messages.map((message) => {
