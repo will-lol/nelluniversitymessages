@@ -29,10 +29,10 @@ export default function MessageGrid(props: MessageGridProps) {
     );
   } else {
     return (
-        <div class={"grid grid-cols-[repeat(" + gridCols + ",100svw)] grid-rows-[repeat(" + gridRows + ",100svh)] justify-items-center items-center"}>
-          <div class="p-7 text-center"><p>Welcome to the {props.university?.name} exhibition.</p> <p class="mb-4">Explore the exhibits by moving around the wall.</p> <Link href="send">Add an exhibit</Link></div>
+        <div class={"grid grid-cols-[repeat(" + gridCols + ",100svw)] grid-rows-[repeat(" + gridRows + ",minmax(100svh,auto))] justify-items-center items-start"}>
+          <div class="p-7 text-center h-[100svh] flex justify-center items-center flex-col"><p>Welcome to the {props.university?.name} exhibition.</p> <p class="mb-4">Explore the exhibits by moving around the wall.</p> <Link href="send">Add an exhibit</Link></div>
             {messages.map((message) => {
-                return <div class="w-[100svw] min-h-[100svh] flex items-center justify-center p-4"><Message title={message.messageTitle} date={message.timeCreated} uuid={message.uuid} university={message.university.name}>{message.messageContent}</Message></div>
+                return <div class="w-[100svw] flex items-start justify-start"><Message title={message.messageTitle} date={message.timeCreated} uuid={message.uuid} university={message.university.name}>{message.messageContent}</Message></div>
             })}
         </div>
       );    
