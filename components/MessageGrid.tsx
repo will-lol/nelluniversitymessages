@@ -2,6 +2,8 @@ import { MessageClass } from "../routes/[university].tsx";
 import Message from "./Message.tsx";
 import { UniversityClass } from "../routes/[university].tsx";
 import Link from "./Link.tsx";
+import randBetween from "../scripts/randbetween.tsx";
+import { template } from "https://deno.land/x/fresh@1.1.2/src/server/render.ts";
 
 interface MessageGridProps {
   messages?: MessageClass[] | null;
@@ -15,9 +17,10 @@ export default function MessageGrid(props: MessageGridProps) {
 
   let messages = props.messages;
   messages = messages?.sort(compareMessageDate);
+  let messagesPlacement: number[][] = [];
 
   const messagesLength = messages?.length ?? 0;
-  const gridRows = messagesLength / 2;
+  const gridRows = Math.round(messagesLength / 2);
   const gridCols = messagesLength;
 
   let divs: Array<preact.JSX.Element> = [];
@@ -52,9 +55,36 @@ export default function MessageGrid(props: MessageGridProps) {
           </div>
         </div>
         {divs}
+
         {messages.map((message) => {
+          let tempPlacement: number[];
+          while (true) {
+            tempPlacement = [
+              randBetween(1, gridRows),
+              randBetween(1, gridCols),
+            ];
+            if (
+              !messagesPlacement.find((element) => {
+                if (
+                  (element[0] == tempPlacement[0] &&
+                    element[1] == tempPlacement[1])
+                ) {
+                  return true;
+                }
+              })
+            ) {
+              if (!(tempPlacement[0] == 1 && tempPlacement[1] == 1)) {
+                messagesPlacement.push(tempPlacement);
+                break;
+              }
+            }
+          }
+
           return (
-            <div class="w-[100svw] flex items-start justify-start">
+            <div
+              class={"w-[100svw] flex items-start justify-start row-start-[" +
+                tempPlacement[0] + "] col-start-[" + tempPlacement[1] + "]"}
+            >
               <Message
                 title={message.messageTitle}
                 date={message.timeCreated}
