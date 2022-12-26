@@ -29,9 +29,7 @@ export class UniversityClass {
   name: string;
 
   constructor(shortName: string, universities: UniversityClass[]) {
-    const temp = universities.find((elem) => {
-      return (elem.shortName.toLowerCase() == shortName.toLowerCase());
-    });
+    const temp = findUniversityShortNameInUniversities(shortName, universities);
     if (temp == undefined) {
       throw ("university shortName does not exist");
     } else {
@@ -72,7 +70,14 @@ interface FirestoreUniversitiesResponse {
   documents: FirestoreUniversityResponse[];
 }
 
-function referenceToShortName(reference: string): string {
+export function findUniversityShortNameInUniversities(shortName: string, universities: UniversityClass[]): UniversityClass | undefined {
+  return universities.find((elem) => {
+    return (elem.shortName.toLowerCase() == shortName.toLowerCase());
+  });
+
+}
+
+export function referenceToShortName(reference: string): string {
   return reference.match("([^\/]+$)")![0];
 }
 

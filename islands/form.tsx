@@ -99,7 +99,6 @@ export default function Form(props: FormProps) {
     if (sendMessage.status != 200) {
       addError(sendMessage.statusText);
     } else {
-      window.location.href = "/" + university;
     }
   }
 
