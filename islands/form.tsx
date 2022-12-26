@@ -136,7 +136,7 @@ export default function Form(props: FormProps) {
         onInput={(e) => checkSetMessage((e.target as HTMLSelectElement).value)}
         disabled={submitting}
       />
-      <Label required htmlFor="title">Add a title</Label>
+      <Label required htmlFor="title">Title</Label>
       <TextArea
         autocomplete="off"
         id={titleElementId}
