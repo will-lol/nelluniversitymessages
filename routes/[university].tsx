@@ -1,5 +1,4 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import Button from "../components/Button.tsx";
 import MessageGrid from "../components/MessageGrid.tsx";
 
 export class MessageClass {
@@ -152,6 +151,7 @@ export const handler: Handlers<UniversityProps> = {
   async GET(_, ctx) {
     const { university } = ctx.params;
     let universityObj;
+
 
     try {
       universityObj = new UniversityClass(university, universities);

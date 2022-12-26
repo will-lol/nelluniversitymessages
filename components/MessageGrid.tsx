@@ -20,8 +20,16 @@ export default function MessageGrid(props: MessageGridProps) {
   const messagesPlacement: number[][] = [];
 
   const messagesLength = messages?.length ?? 0;
-  const gridRows = Math.round(messagesLength / 2);
-  const gridCols = messagesLength;
+  let gridRows = Math.round(messagesLength / 2);
+  let gridCols = messagesLength;
+
+
+  if (gridCols < 2) {
+    gridCols = 2;
+  }
+  if (gridRows < 2) { 
+    gridRows = 2;
+  }
 
   const divs: Array<preact.JSX.Element> = [];
   for (
