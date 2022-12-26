@@ -7,10 +7,10 @@ export default function Home() {
       <Head>
         <title>Home</title>
       </Head>
-      <h1 class="text-5xl">Welcome to nellbradshawisawesome</h1>
-      <p class="my-6">You have landed on a project in progress.</p>
-      <p>Coming soon.</p>
-      <Button>hi im a button</Button>
+      <body class="flex items-center justify-center h-screen flex-col">
+        <h1 class="text-6xl mb-4">Welcome to exhibition.rocks</h1>
+        <p>This website is designed to be launched from a QR code at our exhibition sites.</p>
+      </body>
     </>
   );
 }
