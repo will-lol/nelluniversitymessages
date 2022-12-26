@@ -1,7 +1,12 @@
 import { useEffect, useId, useState } from "preact/hooks";
 import { UniversityClass } from "../routes/[university].tsx";
 import { Message } from "../routes/api/sendMessage.ts";
-import Button from "../components/Button.tsx"
+import Label from "../components/form/Label.tsx";
+import TextArea from "../components/form/TextArea.tsx";
+import Select from "../components/form/Select.tsx";
+import Error from "../components/form/Error.tsx";
+import Button from "../components/Button.tsx";
+import { stringify } from "https://deno.land/std@0.159.0/dotenv/mod.ts";
 
 interface FormProps {
   universities: UniversityClass[];
@@ -9,21 +14,22 @@ interface FormProps {
 
 function getUUIDCookie(): string {
   const cookies = document.cookie.split(";");
-  for(let i = 0; i <cookies.length; i++) {
+  for (let i = 0; i < cookies.length; i++) {
     let c = cookies[i];
-    while (c.charAt(0) == ' ') {
+    while (c.charAt(0) == " ") {
       c = c.substring(1);
     }
     if (c.indexOf("UUID" + "=") == 0) {
       return c.substring(("UUID" + "=").length, c.length);
     }
   }
-  throw "cookie does not exist"
+  throw "cookie does not exist";
 }
 
 function setUUIDCookie() {
-  const UUID = crypto.randomUUID() ;
-  document.cookie = "UUID=" + UUID + ";" + " expires=Fri, 01 Jan 9999 00:00:00 GMT";
+  const UUID = crypto.randomUUID();
+  document.cookie = "UUID=" + UUID + ";" +
+    " expires=Fri, 01 Jan 9999 00:00:00 GMT";
   return UUID;
 }
 
@@ -32,22 +38,40 @@ export default function Form(props: FormProps) {
   const [message, setMessage] = useState("");
   const [university, setUniversity] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const [submitDisable, setSubmitDisable] = useState(false);
+  const [error, setError] = useState(new Set() as Set<string>);
 
   const messageElementId = useId();
   const titleElementId = useId();
   const selectElementId = useId();
 
+  function addError(newError: string) {
+    const temp = error;
+    temp.add(newError);
+    setError(temp);
+  }
+  function removeError(oldError: string) {
+    const temp = error;
+    temp.delete(oldError);
+    setError(temp);
+  }
+
   function onLoad() {
     console.log("hi");
-    setTitle((document.getElementById(titleElementId) as HTMLInputElement).value);
-    setMessage((document.getElementById(messageElementId) as HTMLInputElement).value);
-    setUniversity((document.getElementById(selectElementId) as HTMLSelectElement).value);
+    setTitle(
+      (document.getElementById(titleElementId) as HTMLInputElement).value,
+    );
+    setMessage(
+      (document.getElementById(messageElementId) as HTMLInputElement).value,
+    );
+    setUniversity(
+      (document.getElementById(selectElementId) as HTMLSelectElement).value,
+    );
   }
 
   useEffect(() => {
     onLoad();
-  }, [])
+  }, []);
 
   async function handleSubmit(e: Event) {
     e.preventDefault();
@@ -73,34 +97,56 @@ export default function Form(props: FormProps) {
     });
 
     if (sendMessage.status != 200) {
-      setError(sendMessage.statusText);
+      addError(sendMessage.statusText);
     } else {
       window.location.href = "/" + university;
     }
   }
 
+  function checkSetMessage(message: string) {
+    setMessage(message);
+    const errorMessage = "Your message is too long. Character limit is 500.";
+    if (message.length > 5000) {
+      addError(errorMessage);
+      setSubmitDisable(true);
+    } else {
+      removeError(errorMessage);
+    }
+  }
+
+  function checkSetTitle(title: string) {
+    setTitle(title);
+    const errorMessage = "Your title is too long. Character limit is 500.";
+    if (title.length > 500) {
+      addError(errorMessage);
+      setSubmitDisable(true);
+    } else {
+      removeError(errorMessage);
+    }
+  }
+
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="title">* Title</label>
-      <input
-        autocomplete="off"
-        id={titleElementId}
-        name="title"
-        type="text"
-        onInput={(e) => setTitle((e.target as HTMLSelectElement).value)}
-        disabled={submitting}
- />
-       <label htmlFor="message">* Message</label>
-      <input
+    <form class="my-4 flex flex-col" onSubmit={handleSubmit}>
+      <Label required htmlFor="message">Writing space</Label>
+      <TextArea
         autocomplete="off"
         id={messageElementId}
         name="message"
         type="text"
-        onInput={(e) => setMessage((e.target as HTMLSelectElement).value)}
+        onInput={(e) => checkSetMessage((e.target as HTMLSelectElement).value)}
         disabled={submitting}
       />
-      <label htmlFor="university">* University</label>
-      <select
+      <Label required htmlFor="title">Add a title</Label>
+      <TextArea
+        autocomplete="off"
+        id={titleElementId}
+        name="title"
+        type="text"
+        onInput={(e) => checkSetTitle((e.target as HTMLSelectElement).value)}
+        disabled={submitting}
+      />
+      <Label required htmlFor="university">University</Label>
+      <Select
         name="university"
         id={selectElementId}
         onChange={(e) => setUniversity((e.target as HTMLSelectElement).value)}
@@ -111,11 +157,14 @@ export default function Form(props: FormProps) {
         {props.universities.map((elem) => {
           return <option value={elem.shortName}>{elem.name}</option>;
         })}
-      </select>
+      </Select>
+      {error.size > 0 && Array.from(error).map((elem) => {
+        return <Error>{elem}</Error>
+      })}
       <Button
         type="submit"
         disabled={((message.length == 0) || (university.length == 0)) ||
-          submitting}
+          submitting || submitDisable}
       >
         Submit
       </Button>

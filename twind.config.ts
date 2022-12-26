@@ -31,7 +31,7 @@ export default {
       },
     ],
 
-    body: apply`font-sans dark:bg-black text-black font-normal dark:text-white`,
+    body: apply`font-sans font-normal`,
   },
   theme: {
     fontFamily: {
@@ -42,6 +42,7 @@ export default {
       black: colors.black,
       white: colors.white,
       blue: colors.blue,
+      red: colors.red,
       wallGray: "#E0E0E0"
     },
     extend: {
