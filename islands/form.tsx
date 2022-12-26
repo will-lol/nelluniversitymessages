@@ -145,7 +145,7 @@ export default function Form(props: FormProps) {
         onInput={(e) => checkSetTitle((e.target as HTMLSelectElement).value)}
         disabled={submitting}
       />
-      <Label required htmlFor="university">University</Label>
+      <Label required htmlFor="university">Exhibition site</Label>
       <Select
         name="university"
         id={selectElementId}

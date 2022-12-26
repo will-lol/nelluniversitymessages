@@ -151,8 +151,6 @@ export const handler: Handlers<UniversityProps> = {
   async GET(_, ctx) {
     const { university } = ctx.params;
     let universityObj;
-
-
     try {
       universityObj = new UniversityClass(university, universities);
     } catch {
