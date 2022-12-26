@@ -7,9 +7,9 @@ export default function Home() {
       <Head>
         <title>Home</title>
       </Head>
-      <body class="flex items-center justify-center h-screen flex-col">
-        <h1 class="text-6xl mb-4">Welcome to exhibition.rocks</h1>
-        <p>This website is designed to be launched from a QR code at our exhibition sites.</p>
+      <body class="flex items-center justify-center h-screen flex-col p-4">
+        <h1 class="text-6xl mb-4 text-center">Welcome to exhibition.rocks</h1>
+        <p class="text-center">This website is designed to be launched from a QR code at our exhibition sites.</p>
       </body>
     </>
   );
