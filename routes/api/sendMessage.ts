@@ -81,9 +81,7 @@ export const handler: Handlers = {
 
       return firebaseOauth!;
     }
-
-    //TODO: Check UUID is a suitable length. Check messageContent for spam or profranity. Check university exists.
-
+    
     const messageData = await req.json() as Message;
 
     async function validateMessage(message: Message) {
