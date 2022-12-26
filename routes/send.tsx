@@ -9,7 +9,7 @@ export default function Send() {
       <h1 class="text-6xl font-bold mb-4">EXHIBIT <em>SOMETHING.</em></h1>
       <div class="text-4xl leading-snug">
         <p>
-          We placed exhibition sites around Australian universities.
+          We placed exhibition sites around locations in Australia.
         </p>
         <p>
           We now invite you to exhibit at one of these sites.

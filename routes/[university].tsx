@@ -24,25 +24,22 @@ export class MessageClass {
   }
 }
 
-function capsInsensitiveStringMatch(str1: string, str2: string): boolean {
-  return (str1.toLowerCase == str2.toLowerCase);
-}
-
 export class UniversityClass {
   shortName: string;
   city: string;
   name: string;
 
   constructor(shortName: string, universities: UniversityClass[]) {
-    for (let i = 0; i < universities.length; i++) {
-      if (capsInsensitiveStringMatch(shortName, universities[i].shortName)) {
-        this.shortName = universities[i].shortName;
-        this.city = universities[i].city;
-        this.name = universities[i].name;
-        return;
-      }
+    const temp = universities.find(elem => {
+      return (elem.shortName.toLowerCase() == shortName.toLowerCase());
+    })
+    if (temp == undefined) {
+      throw("university shortName does not exist")
+    } else {
+      this.shortName = temp.shortName;
+      this.city = temp.city;
+      this.name = temp.name;
     }
-    throw ("university shortName does not exist");
   }
 }
 
@@ -93,7 +90,6 @@ export async function fetchUniversities(): Promise<UniversityClass[]> {
       };
     },
   );
-
   return universities;
 }
 

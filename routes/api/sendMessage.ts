@@ -81,6 +81,21 @@ export const handler: Handlers = {
 
     const messageData = await req.json() as Message;
 
+    function validateMessage(message: Message) {
+      if ((message.messageTitle.length > 500) || (message.messageContent.length > 5000) || (message.uuid.length > 36)) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+    if (!validateMessage(messageData)) {
+      return new Response("Error: Validation failed.", {
+        status: 400,
+        statusText: "Bad Request"
+      })
+    }
+
     const data = {
       "fields": {
         "messageTitle": {
