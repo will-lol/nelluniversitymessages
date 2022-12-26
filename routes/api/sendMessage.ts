@@ -6,10 +6,10 @@ import {
 } from "https://deno.land/x/jose@v4.10.0/index.ts";
 
 export interface Message {
-  messageTitle: string,
-  messageContent: string,
-  university: string,
-  uuid: string
+  messageTitle: string;
+  messageContent: string;
+  university: string;
+  uuid: string;
 }
 
 const configData = await envConfig({
@@ -30,9 +30,11 @@ export const handler: Handlers = {
   async POST(req) {
     async function generateJWT(): Promise<string> {
       const expDate = new Date();
-      expDate.setSeconds(expDate.getSeconds() + 3601)
+      expDate.setSeconds(expDate.getSeconds() + 3601);
 
-      const JWT = await new SignJWT({ scope: "https://www.googleapis.com/auth/datastore" })
+      const JWT = await new SignJWT({
+        scope: "https://www.googleapis.com/auth/datastore",
+      })
         .setIssuer(Deno.env.get("SERVICE_ACCOUNT_EMAIL")!)
         .setExpirationTime("3600s")
         .setIssuedAt()
@@ -54,11 +56,13 @@ export const handler: Handlers = {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/x-www-form-urlencoded",
           },
-          body: ("grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=".concat(JWT!))
-        }
-      ).then((res) => res.json().then((res) => res.access_token))
+          body:
+            ("grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion="
+              .concat(JWT!)),
+        },
+      ).then((res) => res.json().then((res) => res.access_token));
     }
 
     async function getFirebaseOauth(): Promise<string> {
@@ -82,7 +86,10 @@ export const handler: Handlers = {
     const messageData = await req.json() as Message;
 
     function validateMessage(message: Message) {
-      if ((message.messageTitle.length > 500) || (message.messageContent.length > 5000) || (message.uuid.length > 36)) {
+      if (
+        (message.messageTitle.length > 500) ||
+        (message.messageContent.length > 5000) || (message.uuid.length > 36)
+      ) {
         return false;
       } else {
         return true;
@@ -92,8 +99,8 @@ export const handler: Handlers = {
     if (!validateMessage(messageData)) {
       return new Response("Error: Validation failed.", {
         status: 400,
-        statusText: "Bad Request"
-      })
+        statusText: "Bad Request",
+      });
     }
 
     const data = {

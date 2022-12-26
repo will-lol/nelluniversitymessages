@@ -29,11 +29,11 @@ export class UniversityClass {
   name: string;
 
   constructor(shortName: string, universities: UniversityClass[]) {
-    const temp = universities.find(elem => {
+    const temp = universities.find((elem) => {
       return (elem.shortName.toLowerCase() == shortName.toLowerCase());
-    })
+    });
     if (temp == undefined) {
-      throw("university shortName does not exist")
+      throw ("university shortName does not exist");
     } else {
       this.shortName = temp.shortName;
       this.city = temp.city;
@@ -171,7 +171,7 @@ export default function University(
 ) {
   return (
     <body class="bg-wallGray bg-repeat bg-small bg-wall-texture overflow-scroll h-fit">
-        <MessageGrid messages={data?.messages} university={data?.university} />
+      <MessageGrid messages={data?.messages} university={data?.university} />
     </body>
   );
 }

@@ -159,7 +159,7 @@ export default function Form(props: FormProps) {
         })}
       </Select>
       {error.size > 0 && Array.from(error).map((elem) => {
-        return <Error>{elem}</Error>
+        return <Error>{elem}</Error>;
       })}
       <Button
         type="submit"
