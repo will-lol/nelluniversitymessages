@@ -67,7 +67,7 @@ export default function MessageGrid(props: MessageGridProps) {
             Explore the exhibits by moving around the wall.
           </p>
           <div class="text-6xl">
-            <Link href={sendURL}>Add an exhibit</Link>
+            <Link href={sendURL}>Create an exhibit</Link>
           </div>
         </div>
         {divs}

@@ -1,5 +1,5 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import { stringify } from "https://deno.land/std@0.159.0/dotenv/mod.ts";
+import { Head } from "$fresh/runtime.ts";
 import MessageGrid from "../components/MessageGrid.tsx";
 
 export class MessageClass {
@@ -44,7 +44,7 @@ export class UniversityClass {
 interface UniversityProps {
   messages: MessageClass[] | null;
   university: UniversityClass;
-  request: Request
+  request: Request;
 }
 
 interface FirestoreMessageResponse {
@@ -72,11 +72,13 @@ interface FirestoreUniversitiesResponse {
   documents: FirestoreUniversityResponse[];
 }
 
-export function findUniversityShortNameInUniversities(shortName: string, universities: UniversityClass[]): UniversityClass | undefined {
+export function findUniversityShortNameInUniversities(
+  shortName: string,
+  universities: UniversityClass[],
+): UniversityClass | undefined {
   return universities.find((elem) => {
     return (elem.shortName.toLowerCase() == shortName.toLowerCase());
   });
-
 }
 
 export function referenceToShortName(reference: string): string {
@@ -166,11 +168,14 @@ export const handler: Handlers<UniversityProps> = {
 
     const messages: MessageClass[] | null = await fetchMessages(universityObj);
 
-    return ctx.render({
+    const response = await ctx.render({
       messages: messages,
       university: universityObj,
-      request: request
+      request: request,
     });
+
+    response.headers.set("Cache-Control", "no-cache");
+    return response;
   },
 };
 
@@ -179,13 +184,26 @@ export default function University(
 ) {
   let pageURL;
   if (data?.request.url == undefined) {
-    pageURL = undefined; 
+    pageURL = undefined;
   } else {
-    pageURL = new URL(data?.request.url)
+    pageURL = new URL(data?.request.url);
   }
   return (
-    <body class="bg-wallGray bg-repeat bg-small bg-wall-texture overflow-scroll h-fit">
-      <MessageGrid URL={pageURL} messages={data?.messages} university={data?.university} />
-    </body>
+    <>
+      <Head>
+        <title>{data?.university.name} exhibition</title>
+        <meta
+          name="description"
+          content="exhibition.rocks is a place to share in an open gallery space."
+        />
+      </Head>
+      <body class="bg-wallGray bg-repeat bg-small bg-wall-texture overflow-scroll h-fit">
+        <MessageGrid
+          URL={pageURL}
+          messages={data?.messages}
+          university={data?.university}
+        />
+      </body>
+    </>
   );
 }
