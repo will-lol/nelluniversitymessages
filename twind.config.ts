@@ -15,6 +15,7 @@ export default {
         fontFamily: "'Archivo Narrow'",
         fontStyle: "normal",
         fontWeight: "400 700",
+        fontDisplay: "swap",
         src: [
           'url("./fonts/ArchivoNarrow-Variable.woff2") format("woff2")',
           'url("./fonts/ArchivoNarrow-Variable.woff") format("woff")'
@@ -24,6 +25,7 @@ export default {
         fontFamily: "'Archivo Narrow'",
         fontStyle: "italic",
         fontWeight: "400 700",
+        fontDisplay: "swap",
         src: [
           'url("./fonts/ArchivoNarrow-Italic-Variable.woff2") format("woff2")',
           'url("./fonts/ArchivoNarrow-Italic-Variable.woff") format("woff")'
