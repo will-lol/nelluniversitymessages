@@ -3,16 +3,24 @@ import Message from "./Message.tsx";
 import { UniversityClass } from "../routes/[university].tsx";
 import Link from "./Link.tsx";
 import randBetween from "../scripts/randbetween.tsx";
-import { template } from "https://deno.land/x/fresh@1.1.2/src/server/render.ts";
 
 interface MessageGridProps {
   messages?: MessageClass[] | null;
   university: UniversityClass | undefined;
+  URL: URL | undefined;
 }
 
 export default function MessageGrid(props: MessageGridProps) {
   function compareMessageDate(a: MessageClass, b: MessageClass) {
     return (b.timeCreated.valueOf() - a.timeCreated.valueOf());
+  }
+
+  let sendURL;
+  if (!(props.URL == undefined) && !(props.university == undefined)) {
+    sendURL = new URL(props.URL?.origin + "/send");
+    sendURL.searchParams.set("university", props.university?.shortName);
+  } else {
+    sendURL = "";
   }
 
   let messages = props.messages;
@@ -59,7 +67,7 @@ export default function MessageGrid(props: MessageGridProps) {
             Explore the exhibits by moving around the wall.
           </p>
           <div class="text-6xl">
-            <Link href="send">Add an exhibit</Link>
+            <Link href={sendURL}>Add an exhibit</Link>
           </div>
         </div>
         {divs}

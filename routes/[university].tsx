@@ -1,4 +1,5 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
+import { stringify } from "https://deno.land/std@0.159.0/dotenv/mod.ts";
 import MessageGrid from "../components/MessageGrid.tsx";
 
 export class MessageClass {
@@ -43,6 +44,7 @@ export class UniversityClass {
 interface UniversityProps {
   messages: MessageClass[] | null;
   university: UniversityClass;
+  request: Request
 }
 
 interface FirestoreMessageResponse {
@@ -153,7 +155,7 @@ async function fetchMessages(
 const universities = await fetchUniversities();
 
 export const handler: Handlers<UniversityProps> = {
-  async GET(_, ctx) {
+  async GET(request, ctx) {
     const { university } = ctx.params;
     let universityObj;
     try {
@@ -167,6 +169,7 @@ export const handler: Handlers<UniversityProps> = {
     return ctx.render({
       messages: messages,
       university: universityObj,
+      request: request
     });
   },
 };
@@ -174,9 +177,15 @@ export const handler: Handlers<UniversityProps> = {
 export default function University(
   { data }: PageProps<UniversityProps | null>,
 ) {
+  let pageURL;
+  if (data?.request.url == undefined) {
+    pageURL = undefined; 
+  } else {
+    pageURL = new URL(data?.request.url)
+  }
   return (
     <body class="bg-wallGray bg-repeat bg-small bg-wall-texture overflow-scroll h-fit">
-      <MessageGrid messages={data?.messages} university={data?.university} />
+      <MessageGrid URL={pageURL} messages={data?.messages} university={data?.university} />
     </body>
   );
 }

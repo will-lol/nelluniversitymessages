@@ -6,7 +6,6 @@ import TextArea from "../components/form/TextArea.tsx";
 import Select from "../components/form/Select.tsx";
 import Error from "../components/form/Error.tsx";
 import Button from "../components/Button.tsx";
-import { stringify } from "https://deno.land/std@0.159.0/dotenv/mod.ts";
 
 interface FormProps {
   universities: UniversityClass[];
@@ -57,7 +56,14 @@ export default function Form(props: FormProps) {
   }
 
   function onLoad() {
-    console.log("hi");
+    const params = (new URL(window.location.href)).searchParams;
+    const selectElem = document.getElementById(selectElementId) as HTMLSelectElement;
+    const universityParam = params.get("university");
+
+    if (universityParam) {
+      selectElem.value = universityParam;
+    }
+    
     setTitle(
       (document.getElementById(titleElementId) as HTMLInputElement).value,
     );
