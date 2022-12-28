@@ -24,12 +24,10 @@ export default function ExhibitGrid(props: Props) {
 
   let exhibits = props.exhibits;
   exhibits = exhibits?.sort(compareExhibitDate);
-  const exhibitsPlacement: number[][] = [];
 
   const exhibitsLength = exhibits?.length ?? 0;
   let gridRows = Math.round(exhibitsLength / 2);
   let gridCols = exhibitsLength;
-
 
   if (gridCols < 2) {
     gridCols = 2;
@@ -37,6 +35,38 @@ export default function ExhibitGrid(props: Props) {
   if (gridRows < 2) { 
     gridRows = 2;
   }
+
+  const exhibitsPlacement: number[][] = [];
+  for (let i = 0;i < exhibitsLength;i++) {
+    let tempPlacement: number[];
+    while (true) {
+      tempPlacement = [
+        randBetween(1, gridRows),
+        randBetween(1, gridCols),
+      ];
+      if (
+        !exhibitsPlacement.find((elem) => {
+          if (
+            (elem[0] == tempPlacement[0] &&
+              elem[1] == tempPlacement[1])
+          ) {
+            return true;
+          }
+        })
+      ) {
+        if (!(tempPlacement[0] == 1 && tempPlacement[1] == 1)) {
+          exhibitsPlacement.push(tempPlacement);
+          break;
+        }
+      }
+    }
+  }
+
+  exhibitsPlacement.sort((a: number[], b: number[]): number => {
+    const aRank = a[0] * a[1];
+    const bRank = b[0] * b[1];
+    return aRank - bRank;
+  })
 
   const divs: Array<preact.JSX.Element> = [];
   for (
@@ -71,42 +101,20 @@ export default function ExhibitGrid(props: Props) {
         </div>
         {divs}
 
-        {exhibits.map((exhibit) => {
-          let tempPlacement: number[];
-          while (true) {
-            tempPlacement = [
-              randBetween(1, gridRows),
-              randBetween(1, gridCols),
-            ];
-            if (
-              !exhibitsPlacement.find((elem) => {
-                if (
-                  (elem[0] == tempPlacement[0] &&
-                    elem[1] == tempPlacement[1])
-                ) {
-                  return true;
-                }
-              })
-            ) {
-              if (!(tempPlacement[0] == 1 && tempPlacement[1] == 1)) {
-                exhibitsPlacement.push(tempPlacement);
-                break;
-              }
-            }
-          }
+        {exhibits.map((elem, index) => {
 
           return (
             <div
               class={"w-[100svw] flex items-start justify-start row-start-[" +
-                tempPlacement[0] + "] col-start-[" + tempPlacement[1] + "]"}
+                exhibitsPlacement[index][0] + "] col-start-[" + exhibitsPlacement[index][1] + "]"}
             >
               <ExhibitComponent
-                title={exhibit.title}
-                date={exhibit.created}
-                uuid={exhibit.uuid}
-                from={exhibit.from}
+                title={elem.title}
+                date={elem.created}
+                uuid={elem.uuid}
+                from={elem.from}
               >
-                {exhibit.content}
+                {elem.content}
               </ExhibitComponent>
             </div>
           );
