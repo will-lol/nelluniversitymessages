@@ -1,15 +1,16 @@
 import { Handlers } from "$fresh/server.ts";
 import { config as envConfig } from "$deno-std/dotenv/mod.ts";
-import { fetchUniversities, findUniversityShortNameInUniversities } from "../[university].tsx";
+import { fetchLocations, findLocationShortNameInLocations } from "../[location].tsx";
 import {
   importPKCS8,
   SignJWT,
 } from "https://deno.land/x/jose@v4.10.0/index.ts";
 
-export interface Message {
-  messageTitle: string;
-  messageContent: string;
-  university: string;
+export interface Exhibit {
+  title: string;
+  content: string;
+  from: string;
+  to: string;
   uuid: string;
 }
 
@@ -82,14 +83,15 @@ export const handler: Handlers = {
       return firebaseOauth!;
     }
     
-    const messageData = await req.json() as Message;
+    const exhibitData = await req.json() as Exhibit;
 
-    async function validateMessage(message: Message) {
+    async function validateMessage(exhibit: Exhibit) {
       if (
-        (message.messageTitle.length > 500) ||
-        (message.messageContent.length > 5000) || 
-        (message.uuid.length > 36) ||
-        (findUniversityShortNameInUniversities(message.university, await fetchUniversities()) == undefined)
+        (exhibit.title.length > 500) ||
+        (exhibit.content.length > 5000) || 
+        (exhibit.uuid.length > 36) ||
+        (findLocationShortNameInLocations(exhibit.from, await fetchLocations()) == undefined) || 
+        (findLocationShortNameInLocations(exhibit.to, await fetchLocations()) == undefined)
       ) {
         return false;
       } else {
@@ -97,7 +99,7 @@ export const handler: Handlers = {
       }
     }
 
-    if (!await validateMessage(messageData)) {
+    if (!await validateMessage(exhibitData)) {
       return new Response("Error: Validation failed.", {
         status: 400,
         statusText: "Bad Request",
@@ -106,22 +108,27 @@ export const handler: Handlers = {
 
     const data = {
       "fields": {
-        "messageTitle": {
-          "stringValue": messageData.messageTitle,
+        "title": {
+          "stringValue": exhibitData.title,
         },
-        "messageContent": {
-          "stringValue": messageData.messageContent,
+        "content": {
+          "stringValue": exhibitData.content,
         },
-        "timeCreated": {
+        "created": {
           "timestampValue": new Date(),
         },
-        "university": {
+        "to": {
           "referenceValue":
-            "projects/nellbradshawisawesome/databases/(default)/documents/universities/" +
-            messageData.university,
+            "projects/nellbradshawisawesome/databases/(default)/documents/locations/" +
+            exhibitData.to,
+        },
+        "from": {
+          "referenceValue":
+            "projects/nellbradshawisawesome/databases/(default)/documents/locations/" +
+            exhibitData.from,
         },
         "uuid": {
-          "stringValue": messageData.uuid,
+          "stringValue": exhibitData.uuid,
         },
       },
     };

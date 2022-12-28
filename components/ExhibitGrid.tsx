@@ -1,35 +1,34 @@
-import { MessageClass } from "../routes/[university].tsx";
-import Message from "./Message.tsx";
-import { UniversityClass } from "../routes/[university].tsx";
+import { Exhibit, Location } from "../routes/[location].tsx";
+import ExhibitComponent from "./Exhibit.tsx";
 import Link from "./Link.tsx";
 import randBetween from "../scripts/randbetween.tsx";
 
-interface MessageGridProps {
-  messages?: MessageClass[] | null;
-  university: UniversityClass | undefined;
+interface Props {
+  exhibits?: Exhibit[] | null;
+  location: Location | undefined;
   URL: URL | undefined;
 }
 
-export default function MessageGrid(props: MessageGridProps) {
-  function compareMessageDate(a: MessageClass, b: MessageClass) {
-    return (b.timeCreated.valueOf() - a.timeCreated.valueOf());
+export default function ExhibitGrid(props: Props) {
+  function compareExhibitDate(a: Exhibit, b: Exhibit) {
+    return (b.created.valueOf() - a.created.valueOf());
   }
 
   let sendURL;
-  if (!(props.URL == undefined) && !(props.university == undefined)) {
+  if (!(props.URL == undefined) && !(props.location == undefined)) {
     sendURL = new URL(props.URL?.origin + "/send");
-    sendURL.searchParams.set("university", props.university?.shortName);
+    sendURL.searchParams.set("university", props.location?.shortName);
   } else {
     sendURL = "";
   }
 
-  let messages = props.messages;
-  messages = messages?.sort(compareMessageDate);
-  const messagesPlacement: number[][] = [];
+  let exhibits = props.exhibits;
+  exhibits = exhibits?.sort(compareExhibitDate);
+  const exhibitsPlacement: number[][] = [];
 
-  const messagesLength = messages?.length ?? 0;
-  let gridRows = Math.round(messagesLength / 2);
-  let gridCols = messagesLength;
+  const exhibitsLength = exhibits?.length ?? 0;
+  let gridRows = Math.round(exhibitsLength / 2);
+  let gridCols = exhibitsLength;
 
 
   if (gridCols < 2) {
@@ -42,13 +41,13 @@ export default function MessageGrid(props: MessageGridProps) {
   const divs: Array<preact.JSX.Element> = [];
   for (
     let i = 0;
-    i <= (((gridCols * gridRows) - messagesLength) - 1);
+    i <= (((gridCols * gridRows) - exhibitsLength) - 1);
     i++
   ) {
     divs.push(<div />);
   }
 
-  if (messages == null) {
+  if (exhibits == null) {
     return (
       <>
         <div>No messages available</div>
@@ -62,7 +61,7 @@ export default function MessageGrid(props: MessageGridProps) {
           ",minmax(100svh,auto))] justify-items-center items-start"}
       >
         <div class="p-7 text-center h-[100svh] flex justify-center items-center flex-col">
-          <p>Welcome to the {props.university?.name} exhibition.</p>{" "}
+          <p>Welcome to the {props.location?.name} exhibition.</p>{" "}
           <p class="text-6xl  mb-4">
             Explore the exhibits by moving around the wall.
           </p>
@@ -72,7 +71,7 @@ export default function MessageGrid(props: MessageGridProps) {
         </div>
         {divs}
 
-        {messages.map((message) => {
+        {exhibits.map((exhibit) => {
           let tempPlacement: number[];
           while (true) {
             tempPlacement = [
@@ -80,17 +79,17 @@ export default function MessageGrid(props: MessageGridProps) {
               randBetween(1, gridCols),
             ];
             if (
-              !messagesPlacement.find((element) => {
+              !exhibitsPlacement.find((elem) => {
                 if (
-                  (element[0] == tempPlacement[0] &&
-                    element[1] == tempPlacement[1])
+                  (elem[0] == tempPlacement[0] &&
+                    elem[1] == tempPlacement[1])
                 ) {
                   return true;
                 }
               })
             ) {
               if (!(tempPlacement[0] == 1 && tempPlacement[1] == 1)) {
-                messagesPlacement.push(tempPlacement);
+                exhibitsPlacement.push(tempPlacement);
                 break;
               }
             }
@@ -101,14 +100,14 @@ export default function MessageGrid(props: MessageGridProps) {
               class={"w-[100svw] flex items-start justify-start row-start-[" +
                 tempPlacement[0] + "] col-start-[" + tempPlacement[1] + "]"}
             >
-              <Message
-                title={message.messageTitle}
-                date={message.timeCreated}
-                uuid={message.uuid}
-                university={message.university.name}
+              <ExhibitComponent
+                title={exhibit.title}
+                date={exhibit.created}
+                uuid={exhibit.uuid}
+                from={exhibit.from}
               >
-                {message.messageContent}
-              </Message>
+                {exhibit.content}
+              </ExhibitComponent>
             </div>
           );
         })}

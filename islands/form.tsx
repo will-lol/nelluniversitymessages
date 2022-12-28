@@ -1,6 +1,6 @@
 import { useEffect, useId, useState, useRef } from "preact/hooks";
-import { UniversityClass } from "../routes/[university].tsx";
-import { Message } from "../routes/api/sendMessage.ts";
+import { Location } from "../routes/[location].tsx";
+import { Exhibit } from "../routes/api/createExhibit.ts";
 import Label from "../components/form/Label.tsx";
 import TextArea from "../components/form/TextArea.tsx";
 import Select from "../components/form/Select.tsx";

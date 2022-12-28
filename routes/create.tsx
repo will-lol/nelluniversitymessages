@@ -1,8 +1,8 @@
 import Form from "../islands/form.tsx";
-import { fetchUniversities } from "./[university].tsx";
+import { fetchLocations } from "./[location].tsx";
 import { Head } from "$fresh/runtime.ts";
 
-const universities = await fetchUniversities();
+const universities = await fetchLocations();
 
 export default function Send() {
   return (
