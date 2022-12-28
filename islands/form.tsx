@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from "preact/hooks";
+import { useEffect, useId, useState, useRef } from "preact/hooks";
 import { UniversityClass } from "../routes/[university].tsx";
 import { Message } from "../routes/api/sendMessage.ts";
 import Label from "../components/form/Label.tsx";
@@ -75,8 +75,12 @@ export default function Form(props: FormProps) {
     );
   }
 
+  const cancelEffect = useRef(false);
   useEffect(() => {
-    onLoad();
+    if (!cancelEffect.current) {
+      onLoad();
+      cancelEffect.current = true;
+    }
   }, []);
 
   async function handleSubmit(e: Event) {
