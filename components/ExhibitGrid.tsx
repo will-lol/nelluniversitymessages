@@ -16,8 +16,8 @@ export default function ExhibitGrid(props: Props) {
 
   let sendURL;
   if (!(props.URL == undefined) && !(props.location == undefined)) {
-    sendURL = new URL(props.URL?.origin + "/send");
-    sendURL.searchParams.set("university", props.location?.shortName);
+    sendURL = new URL(props.URL?.origin + "/create");
+    sendURL.searchParams.set("from", props.location?.shortName);
   } else {
     sendURL = "";
   }
@@ -50,7 +50,7 @@ export default function ExhibitGrid(props: Props) {
   if (exhibits == null) {
     return (
       <>
-        <div>No messages available</div>
+        <div>No exhibits available</div>
       </>
     );
   } else {

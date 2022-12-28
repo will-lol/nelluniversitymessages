@@ -1,14 +1,15 @@
 import { useEffect, useId, useState, useRef } from "preact/hooks";
-import { Location } from "../routes/[location].tsx";
-import { Exhibit } from "../routes/api/createExhibit.ts";
+import { Location, findLocationShortNameInLocations } from "../routes/[location].tsx";
+import { RequestBody } from "../routes/api/createExhibit.ts";
 import Label from "../components/form/Label.tsx";
 import TextArea from "../components/form/TextArea.tsx";
 import Select from "../components/form/Select.tsx";
 import Error from "../components/form/Error.tsx";
 import Button from "../components/Button.tsx";
+import Exhibit from "../components/Exhibit.tsx";
 
 interface FormProps {
-  universities: UniversityClass[];
+  universities: Location[];
 }
 
 function getUUIDCookie(): string {
@@ -34,8 +35,8 @@ function setUUIDCookie() {
 
 export default function Form(props: FormProps) {
   const [title, setTitle] = useState("");
-  const [message, setMessage] = useState("");
-  const [university, setUniversity] = useState("");
+  const [content, setContent] = useState("");
+  const [to, setTo] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitDisable, setSubmitDisable] = useState(false);
   const [error, setError] = useState(new Set() as Set<string>);
@@ -54,23 +55,31 @@ export default function Form(props: FormProps) {
     temp.delete(oldError);
     setError(temp);
   }
+  function getParam(key: string) {
+    const params = (new URL(window.location.href)).searchParams;
+    return params.get(key);
+  }
 
   function onLoad() {
-    const params = (new URL(window.location.href)).searchParams;
     const selectElem = document.getElementById(selectElementId) as HTMLSelectElement;
-    const universityParam = params.get("university");
+    const fromParam = getParam("from");
 
-    if (universityParam) {
-      selectElem.value = universityParam;
+    if (fromParam) {
+      if (findLocationShortNameInLocations(fromParam, props.universities)) {
+        selectElem.value = fromParam;
+        console.log("hi")
+      } else {
+        addError("Invalid from parameter. Please try visiting this site via a location page.")
+      }
     }
     
     setTitle(
       (document.getElementById(titleElementId) as HTMLInputElement).value,
     );
-    setMessage(
+    setContent(
       (document.getElementById(messageElementId) as HTMLInputElement).value,
     );
-    setUniversity(
+    setTo(
       (document.getElementById(selectElementId) as HTMLSelectElement).value,
     );
   }
@@ -93,14 +102,23 @@ export default function Form(props: FormProps) {
     } catch {
       UUID = setUUIDCookie();
     }
-    const body: Message = {
-      messageTitle: title,
-      messageContent: message,
-      university: university,
-      uuid: UUID,
-    };
-    console.log(body);
-    const sendMessage = await fetch("/api/sendMessage", {
+    let body: RequestBody;
+
+    const fromParam = getParam("from")
+    if (!fromParam) {
+      addError("Cannot submit. Please try visiting this site via a location page.");
+      return;
+    } else {
+      body = {
+        title: title,
+        content: content,
+        to: to,
+        from: fromParam,
+        uuid: UUID,
+      };
+    }
+
+    const sendMessage = await fetch("/api/createExhibit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -109,13 +127,13 @@ export default function Form(props: FormProps) {
     if (sendMessage.status != 200) {
       addError(sendMessage.statusText);
     } else {
-      window.location.href = "/" + university;
+      window.location.href = "/" + fromParam;
     }
   }
 
-  function checkSetMessage(message: string) {
-    setMessage(message);
-    const errorMessage = "Your message is too long. Character limit is 500.";
+  function checkSetContent(message: string) {
+    setContent(message);
+    const errorMessage = "Your writing is too long. Character limit is 500.";
     if (message.length > 5000) {
       addError(errorMessage);
       setSubmitDisable(true);
@@ -143,7 +161,7 @@ export default function Form(props: FormProps) {
         id={messageElementId}
         name="message"
         type="text"
-        onInput={(e) => checkSetMessage((e.target as HTMLSelectElement).value)}
+        onInput={(e) => checkSetContent((e.target as HTMLSelectElement).value)}
         disabled={submitting}
       />
       <Label required htmlFor="title">Title</Label>
@@ -159,7 +177,7 @@ export default function Form(props: FormProps) {
       <Select
         name="university"
         id={selectElementId}
-        onChange={(e) => setUniversity((e.target as HTMLSelectElement).value)}
+        onChange={(e) => setTo((e.target as HTMLSelectElement).value)}
         default={undefined}
         autocomplete="off"
       >
@@ -173,7 +191,7 @@ export default function Form(props: FormProps) {
       })}
       <Button
         type="submit"
-        disabled={((message.length == 0) || (university.length == 0)) ||
+        disabled={((content.length == 0) || (to.length == 0)) || (title.length == 0) ||
           submitting || submitDisable}
       >
         Submit

@@ -1,12 +1,13 @@
 import { Handlers } from "$fresh/server.ts";
 import { config as envConfig } from "$deno-std/dotenv/mod.ts";
+import { Location } from "../[location].tsx";
 import { fetchLocations, findLocationShortNameInLocations } from "../[location].tsx";
 import {
   importPKCS8,
   SignJWT,
 } from "https://deno.land/x/jose@v4.10.0/index.ts";
 
-export interface Exhibit {
+export interface RequestBody {
   title: string;
   content: string;
   from: string;
@@ -83,9 +84,9 @@ export const handler: Handlers = {
       return firebaseOauth!;
     }
     
-    const exhibitData = await req.json() as Exhibit;
+    const exhibitData = await req.json() as RequestBody;
 
-    async function validateMessage(exhibit: Exhibit) {
+    async function validateMessage(exhibit: RequestBody) {
       if (
         (exhibit.title.length > 500) ||
         (exhibit.content.length > 5000) || 
@@ -134,7 +135,7 @@ export const handler: Handlers = {
     };
 
     const firestoreRequest = await fetch(
-      "https://firestore.googleapis.com/v1/projects/nellbradshawisawesome/databases/(default)/documents/messages",
+      "https://firestore.googleapis.com/v1/projects/nellbradshawisawesome/databases/(default)/documents/exhibits",
       {
         method: "POST",
         headers: {
