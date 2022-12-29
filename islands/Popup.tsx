@@ -13,6 +13,8 @@ export default function Popup(props: Props) {
     const elem = document.getElementById(props.id);
     const linkElem = document.getElementById(link);
 
+    const url = new URL(window.location.href);
+
     elem?.scrollIntoView({
       behavior: "smooth",
       block: "center",
@@ -23,9 +25,8 @@ export default function Popup(props: Props) {
       linkElem.style.display = "none";
     }
 
-    const url = new URL(window.location.href);
     url.searchParams.delete("id");
-    history.replaceState(null, "", url);
+    setTimeout(() => {history.replaceState(null, "", url);}, 100);
   }
 
   return (
