@@ -22,6 +22,9 @@ export default function Popup(props: Props) {
     if (linkElem) {
       linkElem.style.display = "none";
     }
+
+    const params = new URL(window.location.href);
+    history.replaceState(null, "", params.origin);
   }
 
   return (
