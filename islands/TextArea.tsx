@@ -27,7 +27,7 @@ export default function TextArea(props: Props) {
         return;
       }
       cancelEffect.current = true;
-      let interval = 200;
+      let interval = 100;
       let stringArray: string[] = Array.from(placeholderArray[0]);
       let stringArrayPos = 0;
       let placeholderArrayPos = 0;
@@ -36,7 +36,7 @@ export default function TextArea(props: Props) {
 
       function animation() {  
         if (deleteFlag) {
-          interval = 100;
+          interval = 50;
           if (stringArrayPos > 0) {
             currentString = currentString.substring(0, currentString.length - 1);
             setPlaceholder(currentString);
@@ -52,7 +52,7 @@ export default function TextArea(props: Props) {
             stringArray = Array.from(placeholderArray[placeholderArrayPos]);
           }
         } else if (stringArrayPos < stringArray.length) {
-          interval = 200;
+          interval = 100;
           currentString = currentString.concat(stringArray[stringArrayPos]);
           setPlaceholder(currentString);
           stringArrayPos++
