@@ -2,7 +2,6 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { Head } from "$fresh/runtime.ts";
 import { Location, Exhibit, FirestoreExhibitResponse, FirestoreLocationResponse } from "../scripts/types.ts";
 import ExhibitGrid from "../components/ExhibitGrid/Grid.tsx";
-import Popup from "../islands/Popup.tsx";
 
 interface Props {
   exhibits: Exhibit[] | null;
@@ -144,11 +143,11 @@ export default function LocationPage(
       </Head>
       <body class={"bg-wallGray bg-repeat bg-small bg-wall-texture overflow-scroll h-fit"}>
         <ExhibitGrid
+          fromID={param}
           URL={pageURL}
           exhibits={data?.exhibits}
           location={data?.location}
         />
-        {param != null && <Popup id={param!}></Popup>}
       </body>
     </>
   );

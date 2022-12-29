@@ -2,8 +2,10 @@ import { Exhibit, Location } from "../../scripts/types.ts";
 import ExhibitComponent from "./Exhibit.tsx";
 import Link from "../Link.tsx";
 import randBetween from "../../scripts/randbetween.tsx";
+import Popup from "../../islands/Popup.tsx";
 
 interface Props {
+  fromID: string | null;
   exhibits?: Exhibit[] | null;
   location: Location | undefined;
   URL: URL | undefined;
@@ -32,12 +34,12 @@ export default function ExhibitGrid(props: Props) {
   if (gridCols < 2) {
     gridCols = 2;
   }
-  if (gridRows < 2) { 
+  if (gridRows < 2) {
     gridRows = 2;
   }
 
   const exhibitsPlacement: number[][] = [];
-  for (let i = 0;i < exhibitsLength;i++) {
+  for (let i = 0; i < exhibitsLength; i++) {
     let tempPlacement: number[];
     while (true) {
       tempPlacement = [
@@ -66,7 +68,7 @@ export default function ExhibitGrid(props: Props) {
     const aRank = a[0] * a[1];
     const bRank = b[0] * b[1];
     return aRank - bRank;
-  })
+  });
 
   const divs: Array<preact.JSX.Element> = [];
   for (
@@ -90,23 +92,26 @@ export default function ExhibitGrid(props: Props) {
           ",100svw)] grid-rows-[repeat(" + gridRows +
           ",minmax(100svh,auto))] justify-items-center items-start"}
       >
-        <div class="p-7 text-center h-[100svh] flex justify-center items-center flex-col">
-          <p>Welcome to the {props.location?.name} exhibition.</p>{" "}
-          <p class="text-6xl  mb-4">
-            Explore the exhibits by moving around the wall.
-          </p>
-          <div class="text-6xl">
-            <Link href={sendURL}>Create an exhibit</Link>
+        <div class="relative text-center h-[100svh] flex justify-center items-center flex-col">
+          <div class="p-7 flex justify-center items-center flex-col">
+            <p>Welcome to the {props.location?.name} exhibition.</p>{" "}
+            <p class="text-6xl  mb-4">
+              Explore the exhibits by moving around the wall.
+            </p>
+            <div class="text-6xl">
+              <Link href={sendURL}>Create an exhibit</Link>
+            </div>
           </div>
+          {props.fromID != null && <Popup id={props.fromID!}></Popup>}
         </div>
         {divs}
 
         {exhibits.map((elem, index) => {
-
           return (
             <div
               class={"w-[100svw] flex items-start justify-start row-start-[" +
-                exhibitsPlacement[index][0] + "] col-start-[" + exhibitsPlacement[index][1] + "]"}
+                exhibitsPlacement[index][0] + "] col-start-[" +
+                exhibitsPlacement[index][1] + "]"}
             >
               <ExhibitComponent
                 id={elem.id}
