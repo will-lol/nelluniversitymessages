@@ -12,6 +12,9 @@ export default function App(props: AppProps) {
           content="exhibition.rocks is a place to share in an open gallery space."
         />{" "}
         <link rel="shortcut icon" href="/images/favicon.svg" type="image/svg" />
+        <style>
+          {"html {scroll-behavior: smooth;}"}
+        </style>
       </Head>
       <props.Component />
     </>
