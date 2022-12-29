@@ -23,8 +23,9 @@ export default function Popup(props: Props) {
       linkElem.style.display = "none";
     }
 
-    const params = new URL(window.location.href);
-    history.replaceState(null, "", params.origin);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("id");
+    history.replaceState(null, "", url);
   }
 
   return (
