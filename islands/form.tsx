@@ -50,7 +50,7 @@ export default function Form(props: FormProps) {
   const [submitDisable, setSubmitDisable] = useState(false);
   const [error, setError] = useState(new Set() as Set<string>);
 
-  const messageElementId = useId();
+  const writingElementId = useId();
   const titleElementId = useId();
   const selectElementId = useId();
 
@@ -85,7 +85,7 @@ export default function Form(props: FormProps) {
       (document.getElementById(titleElementId) as HTMLInputElement).value,
     );
     setContent(
-      (document.getElementById(messageElementId) as HTMLInputElement).value,
+      (document.getElementById(writingElementId) as HTMLInputElement).value,
     );
     setTo(
       (document.getElementById(selectElementId) as HTMLSelectElement).value,
@@ -128,16 +128,16 @@ export default function Form(props: FormProps) {
       };
     }
 
-    const sendMessage = await fetch("/api/createExhibit", {
+    const sendExhibit = await fetch("/api/createExhibit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
 
-    const responseBody: FirestoreExhibitDocument = await sendMessage.json();
+    const responseBody: FirestoreExhibitDocument = await sendExhibit.json();
 
-    if (sendMessage.status != 200) {
-      addError(sendMessage.statusText);
+    if (sendExhibit.status != 200) {
+      addError(sendExhibit.statusText);
     } else {
       const url = new URL(window.location.origin + "/" + fromParam);
       url.searchParams.set("id", referenceToShortName(responseBody.name));
@@ -145,10 +145,10 @@ export default function Form(props: FormProps) {
     }
   }
 
-  function checkSetContent(message: string) {
-    setContent(message);
+  function checkSetContent(exhibit: string) {
+    setContent(exhibit);
     const errorMessage = "Your writing is too long. Character limit is 500.";
-    if (message.length > 5000) {
+    if (exhibit.length > 5000) {
       addError(errorMessage);
       setSubmitDisable(true);
     } else {
@@ -169,12 +169,12 @@ export default function Form(props: FormProps) {
 
   return (
     <form class="my-4 flex flex-col" onSubmit={handleSubmit}>
-      <Label required htmlFor="message">Writing space</Label>
+      <Label required htmlFor="writing">Writing space</Label>
       <TextArea
         autocomplete="off"
-        id={messageElementId}
+        id={writingElementId}
         placeholderArray={["hello", "maybe this", "or this"]}
-        name="message"
+        name="writing"
         type="text"
         onInput={(e) => checkSetContent((e.target as HTMLSelectElement).value)}
         disabled={submitting}
@@ -188,9 +188,9 @@ export default function Form(props: FormProps) {
         onInput={(e) => checkSetTitle((e.target as HTMLSelectElement).value)}
         disabled={submitting}
       />
-      <Label required htmlFor="university">Exhibition site</Label>
+      <Label required htmlFor="location">Exhibition site</Label>
       <Select
-        name="university"
+        name="location"
         id={selectElementId}
         onChange={(e) => setTo((e.target as HTMLSelectElement).value)}
         default={undefined}

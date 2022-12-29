@@ -86,7 +86,7 @@ export const handler: Handlers = {
     
     const exhibitData = await req.json() as RequestBody;
 
-    async function validateMessage(exhibit: RequestBody) {
+    async function validateExhibit(exhibit: RequestBody) {
       if (
         (exhibit.title.length > 500) ||
         (exhibit.content.length > 5000) || 
@@ -100,7 +100,7 @@ export const handler: Handlers = {
       }
     }
 
-    if (!await validateMessage(exhibitData)) {
+    if (!await validateExhibit(exhibitData)) {
       return new Response("Error: Validation failed.", {
         status: 400,
         statusText: "Bad Request",

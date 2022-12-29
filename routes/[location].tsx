@@ -38,7 +38,7 @@ export class Location {
   constructor(shortName: string, locations: Location[]) {
     const temp = findLocationShortNameInLocations(shortName, locations);
     if (temp == undefined) {
-      throw ("university shortName does not exist");
+      throw ("location shortName does not exist");
     } else {
       this.shortName = temp.shortName;
       this.name = temp.name;
