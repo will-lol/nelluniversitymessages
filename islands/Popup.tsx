@@ -20,7 +20,7 @@ export default function Popup(props: Props) {
     });
 
     if (linkElem) {
-      linkElem.style.transform = "translateY(200%)";
+      linkElem.style.display = "none";
     }
   }
 
@@ -30,7 +30,7 @@ export default function Popup(props: Props) {
         id={link}
         onClick={click}
         href={"#" + props.id}
-        class="transition-transform rounded-full border border-black border-solid border-opacity-30  p-2 bg-white flex justify-end shadow visited:(translate-y-3 hidden)"
+        class="transition-transform rounded-full border border-black border-solid border-opacity-30  p-2 bg-white flex justify-end shadow"
       >
         <div class="flex items-center" href={"#" + props.id}>
           Jump to your exhibit
