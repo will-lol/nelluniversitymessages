@@ -25,7 +25,7 @@ export default function Popup(props: Props) {
   }
 
   return (
-    <div class="fixed bottom-0 p-4 w-full">
+    <div class="fixed top-[100vh] p-4 w-screen">
       <a
         id={link}
         onClick={click}
