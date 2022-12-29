@@ -1,19 +1,11 @@
 import { Handlers } from "$fresh/server.ts";
 import { config as envConfig } from "$deno-std/dotenv/mod.ts";
-import { Location } from "../[location].tsx";
+import { RequestBody } from "../../scripts/types.ts";
 import { fetchLocations, findLocationShortNameInLocations } from "../[location].tsx";
 import {
   importPKCS8,
   SignJWT,
 } from "https://deno.land/x/jose@v4.10.0/index.ts";
-
-export interface RequestBody {
-  title: string;
-  content: string;
-  from: string;
-  to: string;
-  uuid: string;
-}
 
 const configData = await envConfig({
   export: true,

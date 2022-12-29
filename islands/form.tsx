@@ -1,11 +1,13 @@
 import { useEffect, useId, useRef, useState } from "preact/hooks";
 import {
-  findLocationShortNameInLocations,
   FirestoreExhibitDocument,
   Location,
+  RequestBody,
+} from "../scripts/types.ts";
+import {
+  findLocationShortNameInLocations,
   referenceToShortName,
 } from "../routes/[location].tsx";
-import { RequestBody } from "../routes/api/createExhibit.ts";
 import Label from "../components/form/Label.tsx";
 import TextArea from "./TextArea.tsx";
 import Select from "../components/form/Select.tsx";

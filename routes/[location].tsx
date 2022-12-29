@@ -1,82 +1,13 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { Head } from "$fresh/runtime.ts";
+import { Location, Exhibit, FirestoreExhibitResponse, FirestoreLocationResponse } from "../scripts/types.ts";
 import ExhibitGrid from "../components/ExhibitGrid/Grid.tsx";
 import Popup from "../islands/Popup.tsx";
-
-export class Exhibit {
-  id: string;
-  title: string;
-  content: string;
-  created: Date;
-  to: Location;
-  from: Location;
-  uuid: string;
-
-  constructor(
-    id: string,
-    title: string,
-    content: string,
-    created: Date,
-    to: Location,
-    from: Location,
-    uuid: string,
-  ) {
-    this.id = id;
-    this.title = title;
-    this.content = content;
-    this.created = created;
-    this.to = to;
-    this.from = from;
-    this.uuid = uuid;
-  }
-}
-
-export class Location {
-  shortName: string;
-  name: string;
-
-  constructor(shortName: string, locations: Location[]) {
-    const temp = findLocationShortNameInLocations(shortName, locations);
-    if (temp == undefined) {
-      throw ("location shortName does not exist");
-    } else {
-      this.shortName = temp.shortName;
-      this.name = temp.name;
-    }
-  }
-}
 
 interface Props {
   exhibits: Exhibit[] | null;
   location: Location;
   request: Request;
-}
-
-export interface FirestoreExhibitResponse {
-  document: FirestoreExhibitDocument
-}
-
-export interface FirestoreExhibitDocument {
-  name: string;
-  fields: {
-    title: { stringValue: string };
-    content: { stringValue: string };
-    created: { timestampValue: string };
-    to: { referenceValue: string };
-    from: { referenceValue: string };
-    uuid: { stringValue: string };
-  };
-}
-
-interface FirestoreLocationResponse {
-  name: string;
-  fields: {
-    name: { stringValue: string };
-  };
-}
-
-interface FirestoreLocationResponse {
-  documents: FirestoreLocationResponse[];
 }
 
 export function findLocationShortNameInLocations(

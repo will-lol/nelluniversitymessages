@@ -1,5 +1,5 @@
 import { PreactDOMAttributes } from "preact";
-import { Location } from "../../routes/[location].tsx"
+import { Location } from "../../scripts/types.ts"
 import { timeElapsedString } from "../../scripts/dateformatter.tsx";
 
 interface Props {
