@@ -1,5 +1,5 @@
 import { Options } from "$fresh/plugins/twind.ts";
-import { strict, apply } from 'twind';
+import { strict } from "twind";
 import { content } from 'twind-content';
 import * as colors from 'twind/colors';
 
@@ -32,8 +32,6 @@ export default {
         ]
       },
     ],
-
-    body: apply`font-sans font-normal`,
   },
   theme: {
     fontFamily: {

@@ -1,7 +1,7 @@
-import { Exhibit, Location } from "../routes/[location].tsx";
+import { Exhibit, Location } from "../../routes/[location].tsx";
 import ExhibitComponent from "./Exhibit.tsx";
-import Link from "./Link.tsx";
-import randBetween from "../scripts/randbetween.tsx";
+import Link from "../Link.tsx";
+import randBetween from "../../scripts/randbetween.tsx";
 
 interface Props {
   exhibits?: Exhibit[] | null;
@@ -109,6 +109,7 @@ export default function ExhibitGrid(props: Props) {
                 exhibitsPlacement[index][0] + "] col-start-[" + exhibitsPlacement[index][1] + "]"}
             >
               <ExhibitComponent
+                id={elem.id}
                 title={elem.title}
                 date={elem.created}
                 uuid={elem.uuid}

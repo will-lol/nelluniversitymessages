@@ -1,8 +1,10 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { Head } from "$fresh/runtime.ts";
-import ExhibitGrid from "../components/ExhibitGrid.tsx";
+import ExhibitGrid from "../components/ExhibitGrid/Grid.tsx";
+import Popup from "../islands/Popup.tsx";
 
 export class Exhibit {
+  id: string;
   title: string;
   content: string;
   created: Date;
@@ -11,6 +13,7 @@ export class Exhibit {
   uuid: string;
 
   constructor(
+    id: string,
     title: string,
     content: string,
     created: Date,
@@ -18,6 +21,7 @@ export class Exhibit {
     from: Location,
     uuid: string,
   ) {
+    this.id = id;
     this.title = title;
     this.content = content;
     this.created = created;
@@ -48,17 +52,19 @@ interface Props {
   request: Request;
 }
 
-interface FirestoreExhibitResponse {
-  document: {
-    name: string;
-    fields: {
-      title: { stringValue: string };
-      content: { stringValue: string };
-      created: { timestampValue: string };
-      to: { referenceValue: string };
-      from: { referenceValue: string };
-      uuid: { stringValue: string };
-    };
+export interface FirestoreExhibitResponse {
+  document: FirestoreExhibitDocument
+}
+
+export interface FirestoreExhibitDocument {
+  name: string;
+  fields: {
+    title: { stringValue: string };
+    content: { stringValue: string };
+    created: { timestampValue: string };
+    to: { referenceValue: string };
+    from: { referenceValue: string };
+    uuid: { stringValue: string };
   };
 }
 
@@ -137,6 +143,7 @@ async function fetchExhibits(
   try {
     exhibits = exhibitsFirestore.map((data) => {
       return {
+        id: referenceToShortName(data.document.name),
         title: data.document.fields.title.stringValue,
         content: data.document.fields.content.stringValue,
         created: new Date(data.document.fields.created.timestampValue),
@@ -186,11 +193,15 @@ export default function LocationPage(
   { data }: PageProps<Props | null>,
 ) {
   let pageURL;
+  let param: string | null;
   if (data?.request.url == undefined) {
     pageURL = undefined;
+    param = null;
   } else {
     pageURL = new URL(data?.request.url);
+    param = pageURL.searchParams.get("id");
   }
+
   return (
     <>
       <Head>
@@ -200,12 +211,13 @@ export default function LocationPage(
           content="exhibition.rocks is a place to share in an open gallery space."
         />
       </Head>
-      <body class="bg-wallGray bg-repeat bg-small bg-wall-texture overflow-scroll h-fit">
+      <body class={"bg-wallGray bg-repeat bg-small bg-wall-texture overflow-scroll h-fit"}>
         <ExhibitGrid
           URL={pageURL}
           exhibits={data?.exhibits}
           location={data?.location}
         />
+        {param != null && <Popup id={param!}></Popup>}
       </body>
     </>
   );

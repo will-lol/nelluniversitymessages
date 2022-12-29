@@ -1,15 +1,24 @@
-import { useEffect, useId, useState, useRef } from "preact/hooks";
-import { Location, findLocationShortNameInLocations } from "../routes/[location].tsx";
+import { useEffect, useId, useRef, useState } from "preact/hooks";
+import {
+  findLocationShortNameInLocations,
+  FirestoreExhibitDocument,
+  Location,
+  referenceToShortName,
+} from "../routes/[location].tsx";
 import { RequestBody } from "../routes/api/createExhibit.ts";
 import Label from "../components/form/Label.tsx";
-import TextArea from "../components/form/TextArea.tsx";
+import TextArea from "./TextArea.tsx";
 import Select from "../components/form/Select.tsx";
 import Error from "../components/form/Error.tsx";
 import Button from "../components/Button.tsx";
-import Exhibit from "../components/Exhibit.tsx";
 
 interface FormProps {
   universities: Location[];
+}
+
+function getParam(key: string) {
+  const params = (new URL(window.location.href)).searchParams;
+  return params.get(key);
 }
 
 function getUUIDCookie(): string {
@@ -55,24 +64,23 @@ export default function Form(props: FormProps) {
     temp.delete(oldError);
     setError(temp);
   }
-  function getParam(key: string) {
-    const params = (new URL(window.location.href)).searchParams;
-    return params.get(key);
-  }
 
   function onLoad() {
-    const selectElem = document.getElementById(selectElementId) as HTMLSelectElement;
+    const selectElem = document.getElementById(
+      selectElementId,
+    ) as HTMLSelectElement;
     const fromParam = getParam("from");
 
     if (fromParam) {
       if (findLocationShortNameInLocations(fromParam, props.universities)) {
         selectElem.value = fromParam;
-        console.log("hi")
       } else {
-        addError("Invalid from parameter. Please try visiting this site via a location page.")
+        addError(
+          "Invalid from parameter. Please try visiting this site via a location page.",
+        );
       }
     }
-    
+
     setTitle(
       (document.getElementById(titleElementId) as HTMLInputElement).value,
     );
@@ -104,9 +112,11 @@ export default function Form(props: FormProps) {
     }
     let body: RequestBody;
 
-    const fromParam = getParam("from")
+    const fromParam = getParam("from");
     if (!fromParam) {
-      addError("Cannot submit. Please try visiting this site via a location page.");
+      addError(
+        "Cannot submit. Please try visiting this site via a location page.",
+      );
       return;
     } else {
       body = {
@@ -124,10 +134,14 @@ export default function Form(props: FormProps) {
       body: JSON.stringify(body),
     });
 
+    const responseBody: FirestoreExhibitDocument = await sendMessage.json();
+
     if (sendMessage.status != 200) {
       addError(sendMessage.statusText);
     } else {
-      window.location.href = "/" + fromParam;
+      const url = new URL(window.location.origin + "/" + fromParam);
+      url.searchParams.set("id", referenceToShortName(responseBody.name));
+      window.location.href = url.href;
     }
   }
 
@@ -159,6 +173,7 @@ export default function Form(props: FormProps) {
       <TextArea
         autocomplete="off"
         id={messageElementId}
+        placeholderArray={["hello", "maybe this", "or this"]}
         name="message"
         type="text"
         onInput={(e) => checkSetContent((e.target as HTMLSelectElement).value)}
@@ -191,7 +206,8 @@ export default function Form(props: FormProps) {
       })}
       <Button
         type="submit"
-        disabled={((content.length == 0) || (to.length == 0)) || (title.length == 0) ||
+        disabled={((content.length == 0) || (to.length == 0)) ||
+          (title.length == 0) ||
           submitting || submitDisable}
       >
         Submit

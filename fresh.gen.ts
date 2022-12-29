@@ -10,7 +10,9 @@ import * as $3 from "./routes/_middleware.ts";
 import * as $4 from "./routes/api/createExhibit.ts";
 import * as $5 from "./routes/create.tsx";
 import * as $6 from "./routes/index.tsx";
-import * as $$0 from "./islands/form.tsx";
+import * as $$0 from "./islands/Popup.tsx";
+import * as $$1 from "./islands/TextArea.tsx";
+import * as $$2 from "./islands/form.tsx";
 
 const manifest = {
   routes: {
@@ -23,7 +25,9 @@ const manifest = {
     "./routes/index.tsx": $6,
   },
   islands: {
-    "./islands/form.tsx": $$0,
+    "./islands/Popup.tsx": $$0,
+    "./islands/TextArea.tsx": $$1,
+    "./islands/form.tsx": $$2,
   },
   baseUrl: import.meta.url,
   config,
