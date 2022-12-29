@@ -175,7 +175,7 @@ export default function Form(props: FormProps) {
       <TextArea
         autocomplete="off"
         id={writingElementId}
-        placeholderArray={["hello", "maybe this", "or this"]}
+        placeholderArray={["Describe what you see...", "Write a poem...", "Share a secret...", "Explain a concept...", "Share a thought..."]}
         name="writing"
         type="text"
         onInput={(e) => checkSetContent((e.target as HTMLSelectElement).value)}
