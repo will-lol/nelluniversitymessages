@@ -71,18 +71,19 @@ export default function Form(props: FormProps) {
     const selectElem = document.getElementById(
       selectElementId,
     ) as HTMLSelectElement;
-    const fromParam = getParam("from");
 
+    const fromParam = getParam("from"); //retrieve where the user came from
     if (fromParam) {
       if (findLocationShortNameInLocations(fromParam, props.universities)) {
-        selectElem.value = fromParam;
+        selectElem.value = fromParam; //auto-fill the selectElem with their origin if it exists
       } else {
         addError(
-          "Invalid from parameter. Please try visiting this site via a location page.",
+          "Invalid from parameter. Please try visiting this site via a location page.", //present them with an error otherwise.
         );
       }
     }
 
+    //incase this component is hydrated after user starts filling in form, update state
     setTitle(
       (document.getElementById(titleElementId) as HTMLInputElement).value,
     );
@@ -112,8 +113,8 @@ export default function Form(props: FormProps) {
     } catch {
       UUID = setUUIDCookie();
     }
-    let body: RequestBody;
 
+    let body: RequestBody;
     const fromParam = getParam("from");
     if (!fromParam) {
       addError(
@@ -138,10 +139,11 @@ export default function Form(props: FormProps) {
 
     const responseBody: FirestoreExhibitDocument = await sendExhibit.json();
 
-    if (sendExhibit.status != 200) {
-      addError(sendExhibit.statusText);
-    } else {
-      const url = new URL(window.location.origin + "/" + fromParam);
+    if (sendExhibit.status != 200) {  //if unsuccessful,
+      addError(sendExhibit.statusText); //show error
+      setSubmitting(false); //re-enable form
+    } else {  //otherwise, send user to where they sent their exhibit
+      const url = new URL(window.location.origin + "/" + to);  
       url.searchParams.set("id", referenceToShortName(responseBody.name));
       window.location.href = url.href;
     }

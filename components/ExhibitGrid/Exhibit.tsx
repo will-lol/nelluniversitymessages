@@ -1,6 +1,6 @@
 import { PreactDOMAttributes } from "preact";
 import { Location } from "../../scripts/types.ts"
-import { timeElapsedString } from "../../scripts/dateformatter.tsx";
+import { timeElapsedString } from "../../scripts/dateFormatter.ts";
 
 interface Props {
     title: string,

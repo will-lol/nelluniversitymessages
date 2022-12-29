@@ -8,7 +8,9 @@ interface Props {
 }
 
 export default function Popup(props: Props) {
-  const link = useId();
+  const link = useId(); //bad practise
+
+  //this function just zips the user over to their recently submitted exhibit and removes the url param and hash.
   function click(e: JSXInternal.TargetedMouseEvent<HTMLAnchorElement>) {
     const elem = document.getElementById(props.id);
     const linkElem = document.getElementById(link);
@@ -26,7 +28,7 @@ export default function Popup(props: Props) {
     }
 
     url.searchParams.delete("id");
-    setTimeout(() => {history.replaceState(null, "", url);}, 100);
+    setTimeout(() => {history.replaceState(null, "", url);}, 100);  //for some reason scrollIntoView adds a hash some time after it is called. for this reason, we have to use a delay.
   }
 
   return (

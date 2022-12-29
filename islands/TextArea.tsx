@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { JSX } from "preact";
 
 interface Props extends JSX.HTMLAttributes<HTMLTextAreaElement> {
@@ -15,11 +15,6 @@ export default function TextArea(props: Props) {
     placeholderArray = [];
   }
 
-  let flag = false;
-  function handleFocus() {
-    flag = true;
-  }
-
   if (placeholderArray.length > 0) {
     const cancelEffect = useRef(false);
     useEffect(() => {
@@ -34,42 +29,51 @@ export default function TextArea(props: Props) {
       let currentString = "";
       let deleteFlag = false;
 
-      function animation() {  
+      function animation() {
         if (deleteFlag) {
-          interval = 50;
-          if (stringArrayPos > 0) {
-            currentString = currentString.substring(0, currentString.length - 1);
-            setPlaceholder(currentString);
-            stringArrayPos--;
-          } else {
-            deleteFlag = false;
+          //this code only applies if the placeholder has finished typing and is now deleting
+          interval = 50;  //set interval to be lower because deleting is usually quicker
 
-            if (placeholderArrayPos == (placeholderArray.length-1)) {
-              placeholderArrayPos = 0;
+          if (stringArrayPos > 0) { //if its not fully deleted,
+            currentString = currentString.substring(  //get the next substring
+              0,
+              currentString.length - 1,
+            );
+
+            setPlaceholder(currentString);  //commit changes to placeholder
+            stringArrayPos--; //decrement stringArrayPos
+          } else {  //if its deleted,
+            deleteFlag = false; //disable delete flag
+
+            if (placeholderArrayPos == (placeholderArray.length - 1)) {
+              placeholderArrayPos = 0;  //go back to first string if we have just seen the last one
             } else {
-              placeholderArrayPos++;
+              placeholderArrayPos++;  //otherwise, go to the next string
             }
-            stringArray = Array.from(placeholderArray[placeholderArrayPos]);
+
+            stringArray = Array.from(placeholderArray[placeholderArrayPos]);  //create a char array from our new string!
+            interval = 100; //set placeholder back to normality
           }
+
         } else if (stringArrayPos < stringArray.length) {
-          interval = 100;
-          currentString = currentString.concat(stringArray[stringArrayPos]);
-          setPlaceholder(currentString);
-          stringArrayPos++
-        } else {
-          interval = 1000;
-          deleteFlag = true;
+          //THIS code applies if the placeholder is still typing
+          currentString = currentString.concat(stringArray[stringArrayPos]);  //add the next char
+          
+          setPlaceholder(currentString);  //commit
+          stringArrayPos++; //increment stringArrayPos
+        } else {  //if its finished
+          interval = 1000;  //ponder on the result
+          deleteFlag = true;  //commence the deletion
         }
         setTimeout(animation, interval);
       }
       animation();
-    })
+    });
   }
 
   return (
     <>
       <textarea
-        onFocus={handleFocus}
         placeholder={placeholderArray.length > 0
           ? placeholder
           : props.placeholder}

@@ -1,3 +1,4 @@
+//ctx.renderNotFound
 export default function Error404Page() {
   return (
     <body class="flex items-center justify-center h-screen flex-col p-4">
@@ -6,4 +7,3 @@ export default function Error404Page() {
     </body>
   );
 }
-//ctx.renderNotFound

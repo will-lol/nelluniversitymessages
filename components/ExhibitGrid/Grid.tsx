@@ -1,7 +1,7 @@
 import { Exhibit, Location } from "../../scripts/types.ts";
 import ExhibitComponent from "./Exhibit.tsx";
 import Link from "../Link.tsx";
-import randBetween from "../../scripts/randbetween.tsx";
+import randBetween from "../../scripts/randbetween.ts";
 import Popup from "../../islands/Popup.tsx";
 
 interface Props {

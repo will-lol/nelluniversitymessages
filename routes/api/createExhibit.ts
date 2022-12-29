@@ -1,12 +1,14 @@
 import { Handlers } from "$fresh/server.ts";
 import { config as envConfig } from "$deno-std/dotenv/mod.ts";
 import { RequestBody } from "../../scripts/types.ts";
+import dateInPast from "../../scripts/dateInPast.ts";
 import { fetchLocations, findLocationShortNameInLocations } from "../[location].tsx";
 import {
   importPKCS8,
   SignJWT,
 } from "https://deno.land/x/jose@v4.10.0/index.ts";
 
+//for deno. ignore.
 const configData = await envConfig({
   export: true,
   allowEmptyValues: true,
@@ -17,6 +19,7 @@ const serviceAccountPrivateKey = await importPKCS8(
   "RS256",
 );
 
+//we try not to HAMMER googles servers by persisting the JWT (as much as we can on the edge) and keeping track of its expire time.
 let persistantJWT: string | undefined;
 let persistantJWTExpireTime: Date | undefined;
 let persistantOauthToken: string | undefined;
@@ -38,11 +41,6 @@ export const handler: Handlers = {
 
       persistantJWTExpireTime = expDate;
       return JWT.sign(serviceAccountPrivateKey);
-    }
-
-    function dateInPast(date: Date): boolean {
-      const current = new Date();
-      return date < current;
     }
 
     async function fetchOauth(JWT: string): Promise<string> {

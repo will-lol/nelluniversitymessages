@@ -8,10 +8,6 @@ export default function Send() {
   return (
     <>
       <Head>
-        <meta
-          name="description"
-          content="exhibition.rocks is a place to share in an open gallery space."
-        />
         <title>Create an exhibit</title>
       </Head>
       <div class="p-4">
