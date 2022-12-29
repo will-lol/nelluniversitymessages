@@ -23,7 +23,7 @@ export default function Send() {
             We placed exhibition sites around locations in Australia.
           </p>
           <p>
-            We now invite you to exhibit at one of these sites.
+            We now invite you to exhibit permenantly at one of these sites.
           </p>
         </div>
         <Form universities={universities} />
