@@ -109,12 +109,12 @@ export default function ExhibitGrid(props: Props) {
         {exhibits.map((elem, index) => {
           return (
             <div
-              class={"w-[100svw] flex items-start justify-start row-start-[" +
+            id={elem.id}
+              class={"p-4 w-[100svw] flex items-start justify-start row-start-[" +
                 exhibitsPlacement[index][0] + "] col-start-[" +
                 exhibitsPlacement[index][1] + "]"}
             >
               <ExhibitComponent
-                id={elem.id}
                 title={elem.title}
                 date={elem.created}
                 uuid={elem.uuid}
