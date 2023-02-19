@@ -99,8 +99,8 @@ export const handler: Handlers = {
 
     function formatTitle(title: string): string {
       let formatted = title.trim();
-      if (title.match(/(\.|,)\1{1,}$/) === null) {
-        formatted = formatted.replace(/(\.|,)+$/, "");
+      if (title.match(/(\.|,)\1{1,}$/) === null) {  //if no more than one trailing "." or ","
+        formatted = formatted.replace(/(\.|,)+$/, "");  //delete it
       }
       return formatted;
     }
