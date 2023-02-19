@@ -98,7 +98,11 @@ export const handler: Handlers = {
     }
 
     function formatTitle(title: string): string {
-      return title.trim().replace("/(\.|,)+$", "");
+      let formatted = title.trim();
+      if (title.match(/(\.|,)\1{1,}$/) === null) {
+        formatted = formatted.replace(/(\.|,)+$/, "");
+      }
+      return formatted;
     }
 
     const data = {
