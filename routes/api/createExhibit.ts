@@ -19,7 +19,7 @@ const serviceAccountPrivateKey = await importPKCS8(
   "RS256",
 );
 
-//we try not to HAMMER googles servers by persisting the JWT (as much as we can on the edge) and keeping track of its expire time.
+//we try not to HAMMER google's servers by persisting the JWT (as much as we can on the edge) and keeping track of its expire time.
 let persistantJWT: string | undefined;
 let persistantJWTExpireTime: Date | undefined;
 let persistantOauthToken: string | undefined;
@@ -97,10 +97,14 @@ export const handler: Handlers = {
       });
     }
 
+    function formatTitle(title: string): string {
+      return title.trim().replace("/(\.|,)+$", "");
+    }
+
     const data = {
       "fields": {
         "title": {
-          "stringValue": exhibitData.title,
+          "stringValue": formatTitle(exhibitData.title),
         },
         "content": {
           "stringValue": exhibitData.content,
